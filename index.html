@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WiiMii Task Hub – Kanban • Notes • Monitor</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore-compat.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Varela+Round&display=swap" rel="stylesheet">
@@ -370,7 +372,7 @@
                         <span id="notes-count">0 characters</span>
                         <span class="flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full bg-[#7ED957] animate-pulse"></span>
-                            saved locally
+                            cloud saved
                         </span>
                     </div>
                 </div>
@@ -400,7 +402,7 @@
                     <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
                     <path d="M12 8v4l2.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                 </svg>
-                Built with Wii Mii Channel vibes • All data saved locally ✨
+                Built with Wii Mii Channel vibes • Cloud-synced via Firestore ✨
             </p>
         </footer>
     </div>
@@ -442,10 +444,23 @@
     </div>
 
     <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBeErbKPyVJr7ITsQ8ctC7JsZpRYZypbBw",
+            authDomain: "kanbanapp-e63ae.firebaseapp.com",
+            projectId: "kanbanapp-e63ae",
+            storageBucket: "kanbanapp-e63ae.firebasestorage.app",
+            messagingSenderId: "237638744116",
+            appId: "1:237638744116:web:dab714410999e46fcef261"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         // App State
         let tasks = [];
         let notes = '';
         let draggedTask = null;
+        let notesTimer = null;
 
         // DOM Elements
         const todoColumn = document.getElementById('todo-column');
@@ -459,13 +474,41 @@
         const clearAllBtn = document.getElementById('clearAllBtn');
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            loadData();
+        document.addEventListener('DOMContentLoaded', async () => {
+            showLoading();
+            await loadData();
             renderAll();
             setupEventListeners();
             setupDragAndDrop();
             updateNotesCounter();
+            hideLoading();
         });
+
+        function showLoading() {
+            const overlay = document.createElement('div');
+            overlay.id = 'loading-overlay';
+            overlay.style.cssText = `
+                position: fixed; inset: 0; background: rgba(250,250,250,0.85);
+                display: flex; align-items: center; justify-content: center;
+                z-index: 9999; backdrop-filter: blur(2px);
+            `;
+            overlay.innerHTML = `
+                <div class="flex flex-col items-center gap-3">
+                    <div class="wii-avatar float-soft" style="width:64px;height:64px;font-size:1.5rem">M</div>
+                    <p class="text-sm font-bold text-[#00A2E8] animate-pulse">Loading from cloud...</p>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) {
+                overlay.style.opacity = '0';
+                overlay.style.transition = 'opacity 0.3s';
+                setTimeout(() => overlay.remove(), 300);
+            }
+        }
 
         function setupEventListeners() {
             newTaskBtn.addEventListener('click', () => {
@@ -486,27 +529,31 @@
 
             notesPad.addEventListener('input', () => {
                 notes = notesPad.value;
-                saveData();
+                clearTimeout(notesTimer);
+                notesTimer = setTimeout(async () => {
+                    await db.collection('notes').doc('notepad').set({ content: notes });
+                    notesPad.style.borderColor = '#7ED957';
+                    setTimeout(() => { notesPad.style.borderColor = '#F0D9B5'; }, 300);
+                }, 400);
                 updateNotesCounter();
-                // Visual feedback
-                notesPad.style.borderColor = '#7ED957';
-                setTimeout(() => {
-                    notesPad.style.borderColor = '#F0D9B5';
-                }, 300);
             });
 
-            clearAllBtn.addEventListener('click', () => {
+            clearAllBtn.addEventListener('click', async () => {
                 if (confirm('Clear all tasks and notes? This cannot be undone.')) {
+                    if (tasks.length > 0) {
+                        const batch = db.batch();
+                        tasks.forEach(t => batch.delete(db.collection('tasks').doc(t.id)));
+                        await batch.commit();
+                    }
+                    await db.collection('notes').doc('notepad').set({ content: '' });
                     tasks = [];
                     notes = '';
                     notesPad.value = '';
-                    saveData();
                     renderAll();
                     updateNotesCounter();
                 }
             });
 
-            // Keyboard shortcuts
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && !taskModal.classList.contains('hidden')) {
                     closeModal();
@@ -524,7 +571,7 @@
             taskForm.reset();
         }
 
-        function addNewTask() {
+        async function addNewTask() {
             const title = document.getElementById('taskTitle').value.trim();
             const desc = document.getElementById('taskDesc').value.trim();
 
@@ -538,35 +585,28 @@
                 createdAt: new Date().toISOString()
             };
 
+            await db.collection('tasks').doc(task.id).set(task);
             tasks.unshift(task);
-            saveData();
             renderAll();
             closeModal();
 
-            // Fun feedback
             newTaskBtn.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                newTaskBtn.style.transform = '';
-            }, 150);
+            setTimeout(() => { newTaskBtn.style.transform = ''; }, 150);
         }
 
-        function deleteTask(taskId) {
+        async function deleteTask(taskId) {
+            await db.collection('tasks').doc(taskId).delete();
             tasks = tasks.filter(t => t.id !== taskId);
-            saveData();
             renderAll();
         }
 
-        function moveTask(taskId, newColumn) {
+        async function moveTask(taskId, newColumn) {
             const task = tasks.find(t => t.id === taskId);
             if (task && task.column !== newColumn) {
                 task.column = newColumn;
-                saveData();
+                await db.collection('tasks').doc(taskId).update({ column: newColumn });
                 renderAll();
-
-                // Celebration for done tasks
-                if (newColumn === 'done') {
-                    launchConfetti();
-                }
+                if (newColumn === 'done') launchConfetti();
             }
         }
 
@@ -666,7 +706,6 @@
                     </div>
                 `;
 
-                // Drag events
                 taskEl.addEventListener('dragstart', handleDragStart);
                 taskEl.addEventListener('dragend', handleDragEnd);
 
@@ -674,11 +713,8 @@
             });
         }
 
-        // Expose delete function to global scope for inline onclick
         window.deleteTaskFromUI = (taskId) => {
-            if (confirm('Delete this task?')) {
-                deleteTask(taskId);
-            }
+            if (confirm('Delete this task?')) deleteTask(taskId);
         };
 
         function setupDragAndDrop() {
@@ -695,7 +731,6 @@
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('text/plain', e.currentTarget.dataset.id);
 
-            // Set drag image
             const dragImage = e.currentTarget.cloneNode(true);
             dragImage.style.position = 'absolute';
             dragImage.style.top = '-1000px';
@@ -757,20 +792,14 @@
             document.getElementById('active-count').textContent = active;
             document.getElementById('completion-percent').textContent = percent + '%';
 
-            // Animate progress ring
             const ring = document.getElementById('progress-ring');
             const circumference = 2 * Math.PI * 56;
             const offset = circumference - (percent / 100) * circumference;
             ring.style.strokeDashoffset = offset;
 
-            // Color coding
-            if (percent >= 75) {
-                ring.style.stroke = '#7ED957';
-            } else if (percent >= 50) {
-                ring.style.stroke = '#FFD93D';
-            } else {
-                ring.style.stroke = '#00A2E8';
-            }
+            if (percent >= 75) ring.style.stroke = '#7ED957';
+            else if (percent >= 50) ring.style.stroke = '#FFD93D';
+            else ring.style.stroke = '#00A2E8';
         }
 
         function updateNotesCounter() {
@@ -778,50 +807,27 @@
             document.getElementById('notes-count').textContent = `${count.toLocaleString()} character${count !== 1 ? 's' : ''}`;
         }
 
-        function saveData() {
-            localStorage.setItem('wiimii-tasks', JSON.stringify(tasks));
-            localStorage.setItem('wiimii-notes', notes);
-        }
-
-        function loadData() {
-            const savedTasks = localStorage.getItem('wiimii-tasks');
-            const savedNotes = localStorage.getItem('wiimii-notes');
-
-            if (savedTasks) {
-                try {
-                    tasks = JSON.parse(savedTasks);
-                } catch {
-                    tasks = [];
-                }
+        async function loadData() {
+            const snapshot = await db.collection('tasks').get();
+            tasks = [];
+            if (!snapshot.empty) {
+                snapshot.forEach(doc => tasks.push({ ...doc.data() }));
+                tasks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             } else {
-                // Seed with welcome tasks
-                tasks = [
-                    {
-                        id: 'welcome1',
-                        title: 'Welcome to WiiMii Hub! 👋',
-                        description: 'Drag this card to another column to try it out.',
-                        column: 'todo',
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: 'welcome2',
-                        title: 'Design your Mii avatar',
-                        description: 'Imagine the perfect circular head shape.',
-                        column: 'inprogress',
-                        createdAt: new Date(Date.now() - 86400000).toISOString()
-                    },
-                    {
-                        id: 'welcome3',
-                        title: 'Learn the Wii Sports controls',
-                        description: 'Bowling strike achieved!',
-                        column: 'done',
-                        createdAt: new Date(Date.now() - 172800000).toISOString()
-                    }
+                const seed = [
+                    { id: 'seed1', title: 'Welcome to WiiMii Hub! 👋', description: 'Drag this card to another column to try it out.', column: 'todo', createdAt: new Date().toISOString() },
+                    { id: 'seed2', title: 'Design your Mii avatar', description: 'Imagine the perfect circular head shape.', column: 'inprogress', createdAt: new Date(Date.now() - 86400000).toISOString() },
+                    { id: 'seed3', title: 'Learn the Wii Sports controls', description: 'Bowling strike achieved!', column: 'done', createdAt: new Date(Date.now() - 172800000).toISOString() }
                 ];
+                const batch = db.batch();
+                seed.forEach(t => batch.set(db.collection('tasks').doc(t.id), t));
+                await batch.commit();
+                tasks = seed;
             }
 
-            if (savedNotes !== null) {
-                notes = savedNotes;
+            const notesDoc = await db.collection('notes').doc('notepad').get();
+            if (notesDoc.exists) {
+                notes = notesDoc.data().content || '';
                 notesPad.value = notes;
             }
         }
@@ -832,7 +838,6 @@
             return div.innerHTML;
         }
 
-        // Add subtle hover sound feedback visual cue
         document.addEventListener('mouseenter', (e) => {
             if (e.target.classList.contains('wii-task') || e.target.classList.contains('wii-capsule')) {
                 e.target.style.filter = 'brightness(1.02)';

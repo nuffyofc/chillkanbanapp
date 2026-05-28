@@ -1,0 +1,12 @@
+# OS junk
+Thumbs.db
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Firebase (will contain config keys later)
+firebaseConfig.js

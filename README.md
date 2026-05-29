@@ -1,4 +1,4 @@
-# 🎮 Kanban Board
+# 🎮 Kanvas
 
 **https://nuffyofc.github.io/chillkanbanapp/**
 

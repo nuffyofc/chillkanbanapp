@@ -111,6 +111,11 @@
             font-family: 'Nunito', 'Varela Round', 'Arial Rounded MT Bold', 'Arial Rounded', Arial, sans-serif;
         }
 
+        @keyframes hueShift {
+            0%   { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
         body {
             background-color: #ed5555;
             transition: background-color 1s ease;
@@ -124,6 +129,10 @@
         body.time-sunset  { background-color: #FFF0EC; }
         body.time-evening { background-color: #6404c5; }
         body.time-night   { background-color: #053880; }
+
+        [data-theme="night"] body {
+            animation: hueShift 240s linear infinite;
+        }
 
         .kb-clock {
             background: var(--kb-clock-bg);

@@ -23,6 +23,9 @@
             --kb-pop-red: #FF6B6B;
             --kb-pop-green: #7ED957;
             --kb-pop-yellow: #FFD93D;
+            --kb-clock-bg: #F0F4F8;
+            --kb-clock-text: #2D2D2D;
+            --kb-clock-border: #D9D9D9;
         }
 
         * {
@@ -39,6 +42,77 @@
             background-size: 24px 24px;
             background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
             min-height: 100vh;
+            transition: background-color 1s ease;
+        }
+
+        body.time-sunrise { background-color: #FFF5EC; }
+        body.time-morning { background-color: #FFF8F0; }
+        body.time-noon    { background-color: #FAFAFA; }
+        body.time-afternoon { background-color: #F5F8FC; }
+        body.time-sunset  { background-color: #FFF0EC; }
+        body.time-evening { background-color: #F8F4FC; }
+        body.time-night   { background-color: #E8EDF4; }
+
+        .kb-clock {
+            background: var(--kb-clock-bg);
+            border-radius: 9999px;
+            border: 2px solid var(--kb-clock-border);
+            box-shadow: 0 4px 0 rgba(0,0,0,0.04), 0 6px 12px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 14px 6px 16px;
+        }
+
+        .kb-time-display {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: var(--kb-clock-text);
+            font-variant-numeric: tabular-nums;
+            min-width: 80px;
+        }
+
+        .kb-tz-select {
+            background: transparent;
+            border: none;
+            font-size: 11px;
+            font-weight: 600;
+            color: #888;
+            outline: none;
+            cursor: pointer;
+            max-width: 90px;
+            appearance: none;
+            -webkit-appearance: none;
+            padding-right: 4px;
+        }
+
+        .kb-tz-select:hover {
+            color: var(--kb-blue);
+        }
+
+        .kb-tz-select option {
+            color: #2D2D2D;
+            font-size: 12px;
+            background: white;
+        }
+
+        .kb-period-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+            transition: background 0.6s ease;
+        }
+
+        .kb-period-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .kb-capsule {
@@ -221,7 +295,13 @@
                     <p class="text-sm text-[#666] font-medium">Kanban • Notes • Monitor</p>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 flex-wrap justify-center">
+                <div class="kb-clock">
+                    <span class="kb-period-dot" id="periodDot"></span>
+                    <span class="kb-time-display" id="liveClock">12:00 PM</span>
+                    <span class="kb-period-label" id="periodLabel">noon</span>
+                    <select class="kb-tz-select" id="tzSelect"></select>
+                </div>
                 <button id="newTaskBtn" class="kb-capsule kb-button-primary px-6 py-3 text-sm font-bold flex items-center gap-2">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path d="M12 5v14M5 12h14"/>
@@ -461,6 +541,8 @@
         let notes = '';
         let draggedTask = null;
         let notesTimer = null;
+        let selectedTimezone = null;
+        let clockInterval = null;
 
         // DOM Elements
         const todoColumn = document.getElementById('todo-column');
@@ -472,6 +554,26 @@
         const newTaskBtn = document.getElementById('newTaskBtn');
         const cancelTaskBtn = document.getElementById('cancelTaskBtn');
         const clearAllBtn = document.getElementById('clearAllBtn');
+        const liveClock = document.getElementById('liveClock');
+        const periodDot = document.getElementById('periodDot');
+        const periodLabel = document.getElementById('periodLabel');
+        const tzSelect = document.getElementById('tzSelect');
+
+        // Time-of-day color palettes
+        const timePalettes = {
+            sunrise:  { blue: '#E07A4F', blueLight: '#E8A080', bluePale: '#FDE8DC', dot: '#FF8C5A', bg: '#FFF5EC' },
+            morning:  { blue: '#D4A040', blueLight: '#E0B870', bluePale: '#FDF3E0', dot: '#FFB347', bg: '#FFF8F0' },
+            noon:     { blue: '#00A2E8', blueLight: '#88C0D0', bluePale: '#E6F7FF', dot: '#00A2E8', bg: '#FAFAFA' },
+            afternoon:{ blue: '#4A8DB8', blueLight: '#7DACCC', bluePale: '#E0EFF8', dot: '#4A8DB8', bg: '#F5F8FC' },
+            sunset:   { blue: '#D45A30', blueLight: '#E08060', bluePale: '#FCE0D4', dot: '#FF6B35', bg: '#FFF0EC' },
+            evening:  { blue: '#7C5CBF', blueLight: '#A88FD4', bluePale: '#EDE4F7', dot: '#7C5CBF', bg: '#F8F4FC' },
+            night:    { blue: '#2B4A6E', blueLight: '#5A7A9E', bluePale: '#D0DCE8', dot: '#2B4A6E', bg: '#E8EDF4' }
+        };
+
+        const periodNames = {
+            sunrise: 'sunrise', morning: 'morning', noon: 'noon',
+            afternoon: 'afternoon', sunset: 'sunset', evening: 'evening', night: 'night'
+        };
 
         // Initialize
         document.addEventListener('DOMContentLoaded', async () => {
@@ -481,6 +583,8 @@
             setupEventListeners();
             setupDragAndDrop();
             updateNotesCounter();
+            populateTimezoneOptions();
+            initClock();
             hideLoading();
         });
 
@@ -830,6 +934,137 @@
                 notes = notesDoc.data().content || '';
                 notesPad.value = notes;
             }
+        }
+
+        function getTimePeriod(hour) {
+            if (hour >= 5 && hour < 8) return 'sunrise';
+            if (hour >= 8 && hour < 11) return 'morning';
+            if (hour >= 11 && hour < 14) return 'noon';
+            if (hour >= 14 && hour < 17) return 'afternoon';
+            if (hour >= 17 && hour < 20) return 'sunset';
+            if (hour >= 20 && hour < 22) return 'evening';
+            return 'night';
+        }
+
+        function getTimeInTimezone(tz) {
+            try {
+                const now = new Date();
+                const parts = new Intl.DateTimeFormat('en', {
+                    timeZone: tz,
+                    hour: 'numeric', minute: '2-digit', hour12: true
+                }).formatToParts(now);
+                const hourStr = new Intl.DateTimeFormat('en', {
+                    timeZone: tz, hour: 'numeric', hour12: false
+                }).format(now);
+                const hour = parseInt(hourStr, 10);
+                const timeStr = parts.map(p => p.value).join('').replace(/\u202f/g, ' ').trim();
+                return { hour, timeStr };
+            } catch {
+                const now = new Date();
+                return { hour: now.getHours(), timeStr: now.toLocaleTimeString('en', { hour: 'numeric', minute: '2-digit' }) };
+            }
+        }
+
+        function populateTimezoneOptions() {
+            const tz = selectedTimezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const zones = Intl.supportedValuesOf ? Intl.supportedValuesOf('timeZone') : [];
+            if (zones.length === 0) {
+                const fallback = ['UTC', 'America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles', 'Europe/London', 'Europe/Paris', 'Asia/Tokyo', 'Asia/Shanghai', 'Australia/Sydney'];
+                fallback.forEach(z => {
+                    const opt = document.createElement('option');
+                    opt.value = z; opt.textContent = z;
+                    if (z === tz) opt.selected = true;
+                    tzSelect.appendChild(opt);
+                });
+                return;
+            }
+            const grouped = {};
+            zones.forEach(z => {
+                const region = z.split('/')[0];
+                if (!grouped[region]) grouped[region] = [];
+                grouped[region].push(z);
+            });
+            const order = ['America', 'Europe', 'Asia', 'Africa', 'Australia', 'Pacific', 'Atlantic', 'Indian', 'Etc'];
+            order.forEach(region => {
+                if (grouped[region]) {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = region;
+                    grouped[region].sort().forEach(z => {
+                        const opt = document.createElement('option');
+                        opt.value = z;
+                        const short = z.replace(region + '/', '').replace(/_/g, ' ');
+                        opt.textContent = short;
+                        if (z === tz) opt.selected = true;
+                        optgroup.appendChild(opt);
+                    });
+                    tzSelect.appendChild(optgroup);
+                    delete grouped[region];
+                }
+            });
+            Object.keys(grouped).sort().forEach(region => {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = region;
+                grouped[region].sort().forEach(z => {
+                    const opt = document.createElement('option');
+                    opt.value = z;
+                    opt.textContent = z.replace(region + '/', '').replace(/_/g, ' ');
+                    if (z === tz) opt.selected = true;
+                    optgroup.appendChild(opt);
+                });
+                tzSelect.appendChild(optgroup);
+            });
+        }
+
+        function applyTimePalette(period) {
+            const palette = timePalettes[period];
+            const root = document.documentElement;
+            root.style.setProperty('--kb-blue', palette.blue);
+            root.style.setProperty('--kb-blue-light', palette.blueLight);
+            root.style.setProperty('--kb-blue-pale', palette.bluePale);
+            periodDot.style.background = palette.dot;
+
+            const hour = getTimeInTimezone(selectedTimezone || Intl.DateTimeFormat().resolvedOptions().timeZone).hour;
+            const nightMode = period === 'night' || hour < 5;
+            if (nightMode || period === 'evening') {
+                root.style.setProperty('--kb-clock-text', '#CCC');
+                root.style.setProperty('--kb-clock-bg', '#2A2A2E');
+                root.style.setProperty('--kb-clock-border', '#444');
+                periodLabel.style.color = '#999';
+            } else {
+                root.style.setProperty('--kb-clock-text', '#2D2D2D');
+                root.style.setProperty('--kb-clock-bg', '#F0F4F8');
+                root.style.setProperty('--kb-clock-border', '#D9D9D9');
+                periodLabel.style.color = '#999';
+            }
+
+            document.body.className = document.body.className
+                .replace(/time-\w+/g, '')
+                .trim() + ` time-${period}`;
+        }
+
+        function updateClock() {
+            const tz = selectedTimezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const { hour, timeStr } = getTimeInTimezone(tz);
+            const period = getTimePeriod(hour);
+            liveClock.textContent = timeStr;
+            periodLabel.textContent = period;
+            applyTimePalette(period);
+        }
+
+        function initClock() {
+            const saved = localStorage.getItem('kanvas-timezone');
+            if (saved) {
+                selectedTimezone = saved;
+                tzSelect.value = saved;
+            }
+            updateClock();
+            clockInterval = setInterval(updateClock, 1000);
+
+            tzSelect.addEventListener('change', () => {
+                selectedTimezone = tzSelect.value;
+                localStorage.setItem('kanvas-timezone', selectedTimezone);
+                updateClock();
+            });
         }
 
         function escapeHtml(str) {

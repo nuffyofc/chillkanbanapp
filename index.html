@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WiiMii Task Hub – Kanban • Notes • Monitor</title>
+    <title>Kanban Board – Kanban • Notes • Monitor</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore-compat.js"></script>
@@ -12,17 +12,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Varela+Round&display=swap" rel="stylesheet">
     <style>
         :root {
-            --wii-blue: #00A2E8;
-            --wii-blue-light: #88C0D0;
-            --wii-blue-pale: #E6F7FF;
-            --wii-gray: #F4F4F4;
-            --wii-gray-mid: #E9E9E9;
-            --wii-gray-border: #D9D9D9;
-            --wii-white: #FFFFFF;
-            --wii-shadow: rgba(0, 0, 0, 0.08);
-            --wii-pop-red: #FF6B6B;
-            --wii-pop-green: #7ED957;
-            --wii-pop-yellow: #FFD93D;
+            --kb-blue: #00A2E8;
+            --kb-blue-light: #88C0D0;
+            --kb-blue-pale: #E6F7FF;
+            --kb-gray: #F4F4F4;
+            --kb-gray-mid: #E9E9E9;
+            --kb-gray-border: #D9D9D9;
+            --kb-white: #FFFFFF;
+            --kb-shadow: rgba(0, 0, 0, 0.08);
+            --kb-pop-red: #FF6B6B;
+            --kb-pop-green: #7ED957;
+            --kb-pop-yellow: #FFD93D;
         }
 
         * {
@@ -32,113 +32,113 @@
         body {
             background-color: #FAFAFA;
             background-image:
-                linear-gradient(45deg, var(--wii-gray) 25%, transparent 25%),
-                linear-gradient(-45deg, var(--wii-gray) 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, var(--wii-gray) 75%),
-                linear-gradient(-45deg, transparent 75%, var(--wii-gray) 75%);
+                linear-gradient(45deg, var(--kb-gray) 25%, transparent 25%),
+                linear-gradient(-45deg, var(--kb-gray) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, var(--kb-gray) 75%),
+                linear-gradient(-45deg, transparent 75%, var(--kb-gray) 75%);
             background-size: 24px 24px;
             background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
             min-height: 100vh;
         }
 
-        .wii-capsule {
+        .kb-capsule {
             border-radius: 9999px;
-            background: var(--wii-white);
-            box-shadow: 0 6px 0 var(--wii-shadow), 0 12px 20px rgba(0,0,0,0.06);
+            background: var(--kb-white);
+            box-shadow: 0 6px 0 var(--kb-shadow), 0 12px 20px rgba(0,0,0,0.06);
             transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border: 2px solid var(--wii-gray-border);
+            border: 2px solid var(--kb-gray-border);
         }
 
-        .wii-capsule:hover {
+        .kb-capsule:hover {
             transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 8px 0 var(--wii-shadow), 0 16px 28px rgba(0,0,0,0.09);
+            box-shadow: 0 8px 0 var(--kb-shadow), 0 16px 28px rgba(0,0,0,0.09);
         }
 
-        .wii-capsule:active {
+        .kb-capsule:active {
             transform: translateY(1px) scale(0.98);
-            box-shadow: 0 3px 0 var(--wii-shadow), 0 6px 12px rgba(0,0,0,0.06);
+            box-shadow: 0 3px 0 var(--kb-shadow), 0 6px 12px rgba(0,0,0,0.06);
         }
 
-        .wii-card {
-            background: var(--wii-white);
+        .kb-card {
+            background: var(--kb-white);
             border-radius: 28px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.06), 0 2px 0 var(--wii-gray-border) inset;
-            border: 1px solid var(--wii-gray-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06), 0 2px 0 var(--kb-gray-border) inset;
+            border: 1px solid var(--kb-gray-border);
             transition: all 0.2s ease;
         }
 
-        .wii-card:hover {
-            box-shadow: 0 14px 36px rgba(0,0,0,0.08), 0 2px 0 var(--wii-gray-border) inset;
+        .kb-card:hover {
+            box-shadow: 0 14px 36px rgba(0,0,0,0.08), 0 2px 0 var(--kb-gray-border) inset;
             transform: translateY(-1px);
         }
 
-        .wii-column {
-            background: linear-gradient(180deg, var(--wii-white) 0%, #FCFCFC 100%);
+        .kb-column {
+            background: linear-gradient(180deg, var(--kb-white) 0%, #FCFCFC 100%);
             border-radius: 30px;
-            border: 2px solid var(--wii-gray-mid);
+            border: 2px solid var(--kb-gray-mid);
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 6px 18px rgba(0,0,0,0.04);
         }
 
-        .wii-column-header {
-            background: linear-gradient(180deg, var(--wii-blue-pale) 0%, #DFF2FA 100%);
+        .kb-column-header {
+            background: linear-gradient(180deg, var(--kb-blue-pale) 0%, #DFF2FA 100%);
             border-radius: 24px 24px 18px 18px;
-            border-bottom: 2px solid var(--wii-blue-light);
+            border-bottom: 2px solid var(--kb-blue-light);
         }
 
-        .wii-task {
-            background: var(--wii-white);
+        .kb-task {
+            background: var(--kb-white);
             border-radius: 22px;
-            border: 2px solid var(--wii-gray-border);
-            box-shadow: 0 4px 0 var(--wii-shadow), 0 8px 16px rgba(0,0,0,0.05);
+            border: 2px solid var(--kb-gray-border);
+            box-shadow: 0 4px 0 var(--kb-shadow), 0 8px 16px rgba(0,0,0,0.05);
             cursor: grab;
             transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
             user-select: none;
         }
 
-        .wii-task:hover {
+        .kb-task:hover {
             transform: translateY(-3px) rotate(0.5deg);
-            box-shadow: 0 6px 0 var(--wii-shadow), 0 12px 22px rgba(0,0,0,0.08);
-            border-color: var(--wii-blue-light);
+            box-shadow: 0 6px 0 var(--kb-shadow), 0 12px 22px rgba(0,0,0,0.08);
+            border-color: var(--kb-blue-light);
         }
 
-        .wii-task:active {
+        .kb-task:active {
             cursor: grabbing;
             transform: scale(0.97) rotate(-0.5deg);
         }
 
-        .wii-task.dragging {
+        .kb-task.dragging {
             opacity: 0.6;
             transform: rotate(3deg) scale(0.95);
             box-shadow: 0 12px 28px rgba(0,162,232,0.25);
-            border-color: var(--wii-blue);
+            border-color: var(--kb-blue);
         }
 
-        .wii-drop-hover {
+        .kb-drop-hover {
             background: linear-gradient(180deg, rgba(0,162,232,0.08) 0%, rgba(136,192,208,0.12) 100%);
-            border-color: var(--wii-blue-light) !important;
+            border-color: var(--kb-blue-light) !important;
             box-shadow: inset 0 0 0 3px rgba(0,162,232,0.15), 0 6px 18px rgba(0,0,0,0.04);
         }
 
-        .wii-button-primary {
-            background: linear-gradient(180deg, var(--wii-blue) 0%, #0092D1 100%);
+        .kb-button-primary {
+            background: linear-gradient(180deg, var(--kb-blue) 0%, #0092D1 100%);
             color: white;
             border: none;
             box-shadow: 0 5px 0 #0077A8, 0 10px 20px rgba(0,162,232,0.28);
             font-weight: 700;
         }
 
-        .wii-button-primary:hover {
-            background: linear-gradient(180deg, #00B5FF 0%, var(--wii-blue) 100%);
+        .kb-button-primary:hover {
+            background: linear-gradient(180deg, #00B5FF 0%, var(--kb-blue) 100%);
             transform: translateY(-2px);
             box-shadow: 0 7px 0 #0077A8, 0 14px 26px rgba(0,162,232,0.35);
         }
 
-        .wii-button-primary:active {
+        .kb-button-primary:active {
             transform: translateY(2px);
             box-shadow: 0 2px 0 #0077A8, 0 4px 10px rgba(0,162,232,0.28);
         }
 
-        .wii-note-area {
+        .kb-note-area {
             background: #FFFEF7;
             background-image:
                 linear-gradient(to bottom, transparent 31px, #FFE4B8 32px),
@@ -149,12 +149,12 @@
             box-shadow: inset 0 2px 6px rgba(0,0,0,0.04), 0 8px 22px rgba(0,0,0,0.05);
         }
 
-        .wii-avatar {
+        .kb-avatar {
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--wii-blue-light) 0%, var(--wii-blue) 100%);
-            border: 3px solid var(--wii-white);
+            background: linear-gradient(135deg, var(--kb-blue-light) 0%, var(--kb-blue) 100%);
+            border: 3px solid var(--kb-white);
             box-shadow: 0 4px 10px rgba(0,0,0,0.12);
             display: flex;
             align-items: center;
@@ -188,21 +188,21 @@
             height: 10px;
         }
         ::-webkit-scrollbar-track {
-            background: var(--wii-gray);
+            background: var(--kb-gray);
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb {
-            background: var(--wii-blue-light);
+            background: var(--kb-blue-light);
             border-radius: 10px;
-            border: 2px solid var(--wii-gray);
+            border: 2px solid var(--kb-gray);
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: var(--wii-blue);
+            background: var(--kb-blue);
         }
 
         .tasks-container {
             scrollbar-width: thin;
-            scrollbar-color: var(--wii-blue-light) var(--wii-gray);
+            scrollbar-color: var(--kb-blue-light) var(--kb-gray);
         }
     </style>
 </head>
@@ -211,24 +211,24 @@
         <!-- Header -->
         <header class="mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <div class="wii-avatar float-soft bounce-hover">
+                <div class="kb-avatar float-soft bounce-hover">
                     <span>M</span>
                 </div>
                 <div>
                     <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" style="font-family: 'Varela Round', sans-serif; letter-spacing: -0.02em;">
-                        WiiMii Task Hub
+                        Kanban Board
                     </h1>
                     <p class="text-sm text-[#666] font-medium">Kanban • Notes • Monitor</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <button id="newTaskBtn" class="wii-capsule wii-button-primary px-6 py-3 text-sm font-bold flex items-center gap-2">
+                <button id="newTaskBtn" class="kb-capsule kb-button-primary px-6 py-3 text-sm font-bold flex items-center gap-2">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path d="M12 5v14M5 12h14"/>
                     </svg>
                     New Task
                 </button>
-                <button id="clearAllBtn" class="wii-capsule px-5 py-3 text-sm font-semibold text-[#666] hover:text-[#444]">
+                <button id="clearAllBtn" class="kb-capsule px-5 py-3 text-sm font-semibold text-[#666] hover:text-[#444]">
                     Clear All
                 </button>
             </div>
@@ -236,7 +236,7 @@
 
         <div class="grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-6 lg:gap-8 items-start">
             <!-- Kanban Board -->
-            <section class="wii-card p-5 md:p-6">
+            <section class="kb-card p-5 md:p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold flex items-center gap-2">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-[#00A2E8]">
@@ -256,8 +256,8 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- To Do Column -->
-                    <div class="wii-column p-3.5" data-column="todo">
-                        <div class="wii-column-header px-4 py-3 mb-3 flex items-center justify-between">
+                    <div class="kb-column p-3.5" data-column="todo">
+                        <div class="kb-column-header px-4 py-3 mb-3 flex items-center justify-between">
                             <h3 class="font-bold text-[15px] flex items-center gap-2">
                                 <span class="w-2.5 h-2.5 rounded-full bg-[#FF6B6B] shadow-sm"></span>
                                 To Do
@@ -268,8 +268,8 @@
                     </div>
 
                     <!-- In Progress Column -->
-                    <div class="wii-column p-3.5" data-column="inprogress">
-                        <div class="wii-column-header px-4 py-3 mb-3 flex items-center justify-between" style="background: linear-gradient(180deg, #FFF4E6 0%, #FFE8CC 100%); border-bottom-color: #FFD8A8;">
+                    <div class="kb-column p-3.5" data-column="inprogress">
+                        <div class="kb-column-header px-4 py-3 mb-3 flex items-center justify-between" style="background: linear-gradient(180deg, #FFF4E6 0%, #FFE8CC 100%); border-bottom-color: #FFD8A8;">
                             <h3 class="font-bold text-[15px] flex items-center gap-2">
                                 <span class="w-2.5 h-2.5 rounded-full bg-[#FFD93D] shadow-sm"></span>
                                 In Progress
@@ -280,8 +280,8 @@
                     </div>
 
                     <!-- Done Column -->
-                    <div class="wii-column p-3.5" data-column="done">
-                        <div class="wii-column-header px-4 py-3 mb-3 flex items-center justify-between" style="background: linear-gradient(180deg, #E8F9EF 0%, #D4F1DE 100%); border-bottom-color: #7ED957;">
+                    <div class="kb-column p-3.5" data-column="done">
+                        <div class="kb-column-header px-4 py-3 mb-3 flex items-center justify-between" style="background: linear-gradient(180deg, #E8F9EF 0%, #D4F1DE 100%); border-bottom-color: #7ED957;">
                             <h3 class="font-bold text-[15px] flex items-center gap-2">
                                 <span class="w-2.5 h-2.5 rounded-full bg-[#7ED957] shadow-sm"></span>
                                 Done
@@ -296,7 +296,7 @@
             <!-- Right Sidebar -->
             <aside class="space-y-6">
                 <!-- Dashboard Widget -->
-                <div class="wii-card p-6">
+                <div class="kb-card p-6">
                     <h2 class="text-lg font-bold mb-5 flex items-center gap-2">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-[#00A2E8]">
                             <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none" opacity="0.3"/>
@@ -349,7 +349,7 @@
                 </div>
 
                 <!-- Note-Taker -->
-                <div class="wii-card p-6">
+                <div class="kb-card p-6">
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-bold flex items-center gap-2">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-[#D18B00]">
@@ -361,10 +361,10 @@
                         <span class="text-[10px] font-semibold px-2.5 py-1 bg-[#FFF4E6] text-[#B27400] rounded-full border border-[#FFE4B8]">auto-saved</span>
                     </div>
                     <textarea id="notes-pad"
-                        class="wii-note-area w-full h-48 p-4 pt-6 text-[15px] leading-[32px] resize-none outline-none font-medium text-[#5A4A3A] placeholder-[#C2A680]"
-                        placeholder="Jot down ideas, reminders, or Mii Channel thoughts here...
+                        class="kb-note-area w-full h-48 p-4 pt-6 text-[15px] leading-[32px] resize-none outline-none font-medium text-[#5A4A3A] placeholder-[#C2A680]"
+                        placeholder="Jot down ideas, reminders, or notes and ideas here...
 
-• Remember to feed the Miis
+• Remember to review your tasks
 • Try the new bowling high score
 • Shopping list for today"
                         spellcheck="false"></textarea>
@@ -377,8 +377,8 @@
                     </div>
                 </div>
 
-                <!-- Wii Remote Fun -->
-                <div class="wii-card p-5 text-center">
+                <!-- Play Remote Fun -->
+                <div class="kb-card p-5 text-center">
                     <div class="inline-flex items-center justify-center w-16 h-16 rounded-[22px] bg-gradient-to-br from-[#E6F7FF] to-[#D6EFFA] border-2 border-[#88C0D0]/60 mb-3 float-soft">
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
                             <rect x="6" y="2" width="12" height="20" rx="6" fill="#F5F5F5" stroke="#00A2E8" stroke-width="1.5"/>
@@ -389,7 +389,7 @@
                     </div>
                     <p class="text-[13px] font-semibold text-[#555] leading-snug">
                         Point, click, and drag!<br>
-                        <span class="text-[#00A2E8]">Wii-style</span> task management
+                        <span class="text-[#00A2E8]">card-style</span> task management
                     </p>
                 </div>
             </aside>
@@ -402,14 +402,14 @@
                     <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
                     <path d="M12 8v4l2.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                 </svg>
-                Built with Wii Mii Channel vibes • Cloud-synced via Firestore ✨
+                Built with soft playful vibes • Cloud-synced via Firestore ✨
             </p>
         </footer>
     </div>
 
     <!-- New Task Modal -->
     <div id="taskModal" class="fixed inset-0 bg-black/25 backdrop-blur-[2px] hidden items-center justify-center p-4 z-50">
-        <div class="wii-card w-full max-w-[420px] p-7 animate-[floatSoft_0.4s_ease]">
+        <div class="kb-card w-full max-w-[420px] p-7 animate-[floatSoft_0.4s_ease]">
             <h3 class="text-xl font-extrabold mb-5 flex items-center gap-2.5">
                 <div class="w-9 h-9 rounded-[16px] bg-[#00A2E8] flex items-center justify-center shadow-md">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
@@ -423,7 +423,7 @@
                     <label class="block text-[13px] font-bold text-[#555] mb-2">Task Title</label>
                     <input type="text" id="taskTitle" required maxlength="60"
                         class="w-full px-4 py-3.5 rounded-[20px] border-2 border-[#E0E0E0] bg-white text-[15px] font-medium focus:border-[#00A2E8] focus:ring-4 focus:ring-[#00A2E8]/15 outline-none transition"
-                        placeholder="e.g., Design Mii avatars">
+                        placeholder="e.g., Plan sprint tasks">
                 </div>
                 <div>
                     <label class="block text-[13px] font-bold text-[#555] mb-2">Details (optional)</label>
@@ -432,10 +432,10 @@
                         placeholder="Add a quick note..."></textarea>
                 </div>
                 <div class="flex gap-3 pt-2">
-                    <button type="submit" class="wii-capsule wii-button-primary flex-1 py-3.5 font-bold">
+                    <button type="submit" class="kb-capsule kb-button-primary flex-1 py-3.5 font-bold">
                         Add to Board
                     </button>
-                    <button type="button" id="cancelTaskBtn" class="wii-capsule px-6 py-3.5 font-semibold text-[#666]">
+                    <button type="button" id="cancelTaskBtn" class="kb-capsule px-6 py-3.5 font-semibold text-[#666]">
                         Cancel
                     </button>
                 </div>
@@ -494,7 +494,7 @@
             `;
             overlay.innerHTML = `
                 <div class="flex flex-col items-center gap-3">
-                    <div class="wii-avatar float-soft" style="width:64px;height:64px;font-size:1.5rem">M</div>
+                    <div class="kb-avatar float-soft" style="width:64px;height:64px;font-size:1.5rem">M</div>
                     <p class="text-sm font-bold text-[#00A2E8] animate-pulse">Loading from cloud...</p>
                 </div>
             `;
@@ -675,7 +675,7 @@
 
             columnTasks.forEach(task => {
                 const taskEl = document.createElement('div');
-                taskEl.className = 'wii-task p-4 group';
+                taskEl.className = 'kb-task p-4 group';
                 taskEl.draggable = true;
                 taskEl.dataset.id = task.id;
 
@@ -742,8 +742,8 @@
         function handleDragEnd(e) {
             e.currentTarget.classList.remove('dragging');
             draggedTask = null;
-            document.querySelectorAll('.wii-column').forEach(col => {
-                col.classList.remove('wii-drop-hover');
+            document.querySelectorAll('.kb-column').forEach(col => {
+                col.classList.remove('kb-drop-hover');
             });
         }
 
@@ -752,20 +752,20 @@
             e.dataTransfer.dropEffect = 'move';
             const column = e.currentTarget.closest('[data-column]');
             if (column && draggedTask) {
-                column.classList.add('wii-drop-hover');
+                column.classList.add('kb-drop-hover');
             }
         }
 
         function handleDragLeave(e) {
             if (!e.currentTarget.contains(e.relatedTarget)) {
-                e.currentTarget.classList.remove('wii-drop-hover');
+                e.currentTarget.classList.remove('kb-drop-hover');
             }
         }
 
         function handleDrop(e) {
             e.preventDefault();
             const columnEl = e.currentTarget.closest('[data-column]');
-            columnEl.classList.remove('wii-drop-hover');
+            columnEl.classList.remove('kb-drop-hover');
 
             const taskId = e.dataTransfer.getData('text/plain');
             const newColumn = columnEl.dataset.column;
@@ -815,9 +815,9 @@
                 tasks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             } else {
                 const seed = [
-                    { id: 'seed1', title: 'Welcome to WiiMii Hub! 👋', description: 'Drag this card to another column to try it out.', column: 'todo', createdAt: new Date().toISOString() },
-                    { id: 'seed2', title: 'Design your Mii avatar', description: 'Imagine the perfect circular head shape.', column: 'inprogress', createdAt: new Date(Date.now() - 86400000).toISOString() },
-                    { id: 'seed3', title: 'Learn the Wii Sports controls', description: 'Bowling strike achieved!', column: 'done', createdAt: new Date(Date.now() - 172800000).toISOString() }
+                    { id: 'seed1', title: 'Welcome to the board! 👋', description: 'Drag this card to another column to try it out.', column: 'todo', createdAt: new Date().toISOString() },
+                    { id: 'seed2', title: 'Plan your project roadmap', description: 'Break down big goals into small steps.', column: 'inprogress', createdAt: new Date(Date.now() - 86400000).toISOString() },
+                    { id: 'seed3', title: 'Review quarterly goals', description: 'Bowling strike achieved!', column: 'done', createdAt: new Date(Date.now() - 172800000).toISOString() }
                 ];
                 const batch = db.batch();
                 seed.forEach(t => batch.set(db.collection('tasks').doc(t.id), t));
@@ -839,13 +839,13 @@
         }
 
         document.addEventListener('mouseenter', (e) => {
-            if (e.target.classList.contains('wii-task') || e.target.classList.contains('wii-capsule')) {
+            if (e.target.classList.contains('kb-task') || e.target.classList.contains('kb-capsule')) {
                 e.target.style.filter = 'brightness(1.02)';
             }
         }, true);
 
         document.addEventListener('mouseleave', (e) => {
-            if (e.target.classList.contains('wii-task') || e.target.classList.contains('wii-capsule')) {
+            if (e.target.classList.contains('kb-task') || e.target.classList.contains('kb-capsule')) {
                 e.target.style.filter = '';
             }
         }, true);

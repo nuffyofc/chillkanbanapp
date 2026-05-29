@@ -26,6 +26,85 @@
             --kb-clock-bg: #F0F4F8;
             --kb-clock-text: #2D2D2D;
             --kb-clock-border: #D9D9D9;
+            --kb-text: #2D2D2D;
+            --kb-text-secondary: #666;
+            --kb-text-soft: #555;
+            --kb-text-dim: #777;
+            --kb-text-muted: #999;
+            --kb-text-light: #AAA;
+            --kb-surface-muted: #F7F7F7;
+            --kb-surface-soft: #F5F5F5;
+            --kb-surface-blue: #E6F7FF;
+            --kb-surface-warm: #FFF4E6;
+            --kb-surface-green: #F0FBE8;
+            --kb-surface-green-dark: #D8F0C8;
+            --kb-surface-warm-dark: #FFE8CC;
+            --kb-border: #E0E0E0;
+            --kb-border-mid: #E8E8E8;
+            --kb-modal-overlay: rgba(0,0,0,0.25);
+        }
+
+        [data-theme="dark"], [data-theme="night"] {
+            --kb-blue: #5AACEE;
+            --kb-blue-light: #6AB0E0;
+            --kb-blue-pale: #1E3050;
+            --kb-gray: #222226;
+            --kb-gray-mid: #2A2A2E;
+            --kb-gray-border: #3A3A3E;
+            --kb-white: #18181C;
+            --kb-shadow: rgba(0,0,0,0.35);
+            --kb-clock-bg: #2A2A2E;
+            --kb-clock-text: #E0E0E0;
+            --kb-clock-border: #444;
+            --kb-text: #EAEAEA;
+            --kb-text-secondary: #AAA;
+            --kb-text-soft: #999;
+            --kb-text-dim: #888;
+            --kb-text-muted: #777;
+            --kb-text-light: #666;
+            --kb-surface-muted: #2A2A2E;
+            --kb-surface-soft: #333;
+            --kb-surface-blue: #1A2A3E;
+            --kb-surface-warm: #3A3020;
+            --kb-surface-green: #1A2E1A;
+            --kb-surface-green-dark: #142214;
+            --kb-surface-warm-dark: #2A2018;
+            --kb-border: #444;
+            --kb-border-mid: #3A3A3E;
+            --kb-modal-overlay: rgba(0,0,0,0.6);
+        }
+
+        [data-theme="night"] .kb-button-primary {
+            box-shadow: 0 5px 0 #1A4A6A, 0 10px 20px rgba(90,172,238,0.2);
+        }
+
+        [data-theme="night"] .kb-column-header {
+            border-bottom-color: #3A5A7A !important;
+        }
+
+        [data-theme="night"] .kb-column-header[style*="FFF4E6"] {
+            background: linear-gradient(180deg, #3A3020 0%, #2A2018 100%) !important;
+            border-bottom-color: #5A4A3A !important;
+        }
+
+        [data-theme="night"] .kb-column-header[style*="E8F9EF"] {
+            background: linear-gradient(180deg, #1A2E1A 0%, #142214 100%) !important;
+            border-bottom-color: #2A4A2A !important;
+        }
+
+        [data-theme="night"] .kb-task {
+            border-color: #3A3A3E;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.2), 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        [data-theme="night"] .kb-task:hover {
+            border-color: var(--kb-blue-light);
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2), 0 12px 22px rgba(0,0,0,0.2);
+        }
+
+        [data-theme="night"] .count-badge {
+            background: rgba(24,24,28,0.8) !important;
+            border-color: #3A3A3E !important;
         }
 
         * {
@@ -223,6 +302,24 @@
             box-shadow: inset 0 2px 6px rgba(0,0,0,0.04), 0 8px 22px rgba(0,0,0,0.05);
         }
 
+        .kb-note-area::placeholder {
+            color: #C2A680;
+        }
+
+        [data-theme="night"] .kb-note-area {
+            background: #2A2018;
+            background-image:
+                linear-gradient(to bottom, transparent 31px, #4A3A2A 32px),
+                linear-gradient(to right, transparent 31px, #3A2A1A 32px);
+            background-size: 32px 32px;
+            border-color: #5A4A3A;
+            color: #D0C0A0;
+        }
+
+        [data-theme="night"] .kb-note-area::placeholder {
+            color: #7A6A5A;
+        }
+
         .kb-avatar {
             width: 48px;
             height: 48px;
@@ -280,7 +377,7 @@
         }
     </style>
 </head>
-<body class="text-[#2D2D2D] antialiased">
+<body class="text-[var(--kb-text)] antialiased">
     <div class="min-h-screen p-4 md:p-6 lg:p-8 max-w-[1400px] mx-auto">
         <!-- Header -->
         <header class="mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -292,7 +389,7 @@
                     <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight" style="font-family: 'Varela Round', sans-serif; letter-spacing: -0.02em;">
                         Kanvas
                     </h1>
-                    <p class="text-sm text-[#666] font-medium">Kanban • Notes • Monitor</p>
+                    <p class="text-sm text-[var(--kb-text-secondary)] font-medium">Kanban • Notes • Monitor</p>
                 </div>
             </div>
             <div class="flex items-center gap-3 flex-wrap justify-center">
@@ -308,7 +405,7 @@
                     </svg>
                     New Task
                 </button>
-                <button id="clearAllBtn" class="kb-capsule px-5 py-3 text-sm font-semibold text-[#666] hover:text-[#444]">
+                <button id="clearAllBtn" class="kb-capsule px-5 py-3 text-sm font-semibold text-[var(--kb-text-secondary)] hover:text-[var(--kb-text-secondary)]">
                     Clear All
                 </button>
             </div>
@@ -319,7 +416,7 @@
             <section class="kb-card p-5 md:p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold flex items-center gap-2">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-[#00A2E8]">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-[var(--kb-blue)]">
                             <rect x="3" y="3" width="7" height="7" rx="2" fill="currentColor" opacity="0.2"/>
                             <rect x="3" y="3" width="7" height="7" rx="2" stroke="currentColor" stroke-width="2"/>
                             <rect x="14" y="3" width="7" height="7" rx="2" fill="currentColor" opacity="0.2"/>
@@ -331,7 +428,7 @@
                         </svg>
                         Task Board
                     </h2>
-                    <span class="text-xs font-semibold px-3 py-1.5 bg-[#F0F8FF] text-[#00A2E8] rounded-full border border-[#88C0D0]">drag & drop</span>
+                    <span class="text-xs font-semibold px-3 py-1.5 bg-[var(--kb-blue-pale)] text-[var(--kb-blue)] rounded-full border border-[var(--kb-blue-light)]">drag & drop</span>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -342,7 +439,7 @@
                                 <span class="w-2.5 h-2.5 rounded-full bg-[#FF6B6B] shadow-sm"></span>
                                 To Do
                             </h3>
-                            <span class="count-badge text-xs font-bold bg-white/80 px-2.5 py-1 rounded-full border border-[#88C0D0]/40" data-count="todo">0</span>
+                            <span class="count-badge text-xs font-bold bg-[var(--kb-white)]/80 px-2.5 py-1 rounded-full border border-[color-mix(in_srgb,var(--kb-blue-light)_40%,transparent)]" data-count="todo">0</span>
                         </div>
                         <div class="tasks-container min-h-[360px] space-y-3 p-1 max-h-[60vh] overflow-y-auto" id="todo-column"></div>
                     </div>
@@ -354,7 +451,7 @@
                                 <span class="w-2.5 h-2.5 rounded-full bg-[#FFD93D] shadow-sm"></span>
                                 In Progress
                             </h3>
-                            <span class="count-badge text-xs font-bold bg-white/80 px-2.5 py-1 rounded-full border border-[#FFD8A8]/60" data-count="inprogress">0</span>
+                            <span class="count-badge text-xs font-bold bg-[var(--kb-white)]/80 px-2.5 py-1 rounded-full border border-[color-mix(in_srgb,var(--kb-pop-yellow)_50%,transparent)]" data-count="inprogress">0</span>
                         </div>
                         <div class="tasks-container min-h-[360px] space-y-3 p-1 max-h-[60vh] overflow-y-auto" id="inprogress-column"></div>
                     </div>
@@ -366,7 +463,7 @@
                                 <span class="w-2.5 h-2.5 rounded-full bg-[#7ED957] shadow-sm"></span>
                                 Done
                             </h3>
-                            <span class="count-badge text-xs font-bold bg-white/80 px-2.5 py-1 rounded-full border border-[#7ED957]/50" data-count="done">0</span>
+                            <span class="count-badge text-xs font-bold bg-[var(--kb-white)]/80 px-2.5 py-1 rounded-full border border-[color-mix(in_srgb,var(--kb-pop-green)_50%,transparent)]" data-count="done">0</span>
                         </div>
                         <div class="tasks-container min-h-[360px] space-y-3 p-1 max-h-[60vh] overflow-y-auto" id="done-column"></div>
                     </div>
@@ -378,7 +475,7 @@
                 <!-- Dashboard Widget -->
                 <div class="kb-card p-6">
                     <h2 class="text-lg font-bold mb-5 flex items-center gap-2">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-[#00A2E8]">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-[var(--kb-blue)]">
                             <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none" opacity="0.3"/>
                             <path d="M12 3v9l6 3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
                         </svg>
@@ -396,26 +493,26 @@
                                         style="transition: stroke-dashoffset 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);"/>
                                 </svg>
                                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                                    <span id="completion-percent" class="text-2xl font-extrabold text-[#00A2E8]">0%</span>
-                                    <span class="text-[11px] font-semibold text-[#777] uppercase tracking-wide">Complete</span>
+                                    <span id="completion-percent" class="text-2xl font-extrabold text-[var(--kb-blue)]">0%</span>
+                                    <span class="text-[11px] font-semibold text-[var(--kb-text-dim)] uppercase tracking-wide">Complete</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Stats Grid -->
                         <div class="grid grid-cols-2 gap-3">
-                            <div class="bg-gradient-to-br from-[#F8FBFF] to-[#EFF8FF] rounded-[20px] p-3.5 border border-[#D6EBFF]">
-                                <div class="text-[11px] font-bold text-[#558] uppercase tracking-wide mb-1">Active</div>
-                                <div id="active-count" class="text-xl font-extrabold text-[#00A2E8]">0</div>
+                            <div class="bg-gradient-to-br from-[var(--kb-surface-blue)] to-[var(--kb-blue-pale)] rounded-[20px] p-3.5 border border-[color-mix(in_srgb,var(--kb-blue)_40%,transparent)]">
+                                <div class="text-[11px] font-bold text-[var(--kb-text-secondary)] uppercase tracking-wide mb-1">Active</div>
+                                <div id="active-count" class="text-xl font-extrabold text-[var(--kb-blue)]">0</div>
                             </div>
-                            <div class="bg-gradient-to-br from-[#F9FFF2] to-[#F0FBE8] rounded-[20px] p-3.5 border border-[#D9F0C7]">
-                                <div class="text-[11px] font-bold text-[#575] uppercase tracking-wide mb-1">Done</div>
-                                <div id="done-count" class="text-xl font-extrabold text-[#5CB85C]">0</div>
+                            <div class="rounded-[20px] p-3.5 border border-[color-mix(in_srgb,var(--kb-pop-green)_40%,transparent)]" style="background:linear-gradient(135deg,var(--kb-surface-green),var(--kb-surface-green-dark))">
+                                <div class="text-[11px] font-bold text-[var(--kb-text-secondary)] uppercase tracking-wide mb-1">Done</div>
+                                <div id="done-count" class="text-xl font-extrabold text-[var(--kb-pop-green)]">0</div>
                             </div>
-                            <div class="bg-gradient-to-br from-[#FFF9F0] to-[#FFF4E6] rounded-[20px] p-3.5 border border-[#FFE4B8] col-span-2">
+                            <div class="rounded-[20px] p-3.5 border border-[color-mix(in_srgb,var(--kb-pop-yellow)_40%,transparent)] col-span-2" style="background:linear-gradient(135deg,var(--kb-surface-warm),var(--kb-surface-warm-dark))">
                                 <div class="flex items-center justify-between">
                                     <div>
-                                        <div class="text-[11px] font-bold text-[#875] uppercase tracking-wide mb-1">Total Tasks</div>
+                                        <div class="text-[11px] font-bold text-[var(--kb-text-secondary)] uppercase tracking-wide mb-1">Total Tasks</div>
                                         <div id="total-count" class="text-xl font-extrabold text-[#D18B00]">0</div>
                                     </div>
                                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" class="text-[#FFD93D] opacity-60">
@@ -438,17 +535,17 @@
                             </svg>
                             Quick Notes
                         </h2>
-                        <span class="text-[10px] font-semibold px-2.5 py-1 bg-[#FFF4E6] text-[#B27400] rounded-full border border-[#FFE4B8]">auto-saved</span>
+                        <span class="text-[10px] font-semibold px-2.5 py-1 bg-[var(--kb-surface-warm)] text-[var(--kb-pop-yellow)] rounded-full border border-[color-mix(in_srgb,var(--kb-pop-yellow)_50%,transparent)]">auto-saved</span>
                     </div>
                     <textarea id="notes-pad"
-                        class="kb-note-area w-full h-48 p-4 pt-6 text-[15px] leading-[32px] resize-none outline-none font-medium text-[#5A4A3A] placeholder-[#C2A680]"
+                        class="kb-note-area w-full h-48 p-4 pt-6 text-[15px] leading-[32px] resize-none outline-none font-medium"
                         placeholder="Jot down ideas, reminders, or notes and ideas here...
 
 • Remember to review your tasks
 • Try the new bowling high score
 • Shopping list for today"
                         spellcheck="false"></textarea>
-                    <div class="mt-3 flex items-center justify-between text-[11px] text-[#9C8C7C] font-medium">
+                    <div class="mt-3 flex items-center justify-between text-[11px] text-[var(--kb-text-dim)] font-medium">
                         <span id="notes-count">0 characters</span>
                         <span class="flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full bg-[#7ED957] animate-pulse"></span>
@@ -459,7 +556,7 @@
 
                 <!-- Play Remote Fun -->
                 <div class="kb-card p-5 text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-[22px] bg-gradient-to-br from-[#E6F7FF] to-[#D6EFFA] border-2 border-[#88C0D0]/60 mb-3 float-soft">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-[22px] bg-gradient-to-br from-[var(--kb-blue-pale)] to-[color-mix(in_srgb,var(--kb-blue-pale)_70%,var(--kb-blue-light))] border-2 border-[color-mix(in_srgb,var(--kb-blue-light)_60%,transparent)] mb-3 float-soft">
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
                             <rect x="6" y="2" width="12" height="20" rx="6" fill="#F5F5F5" stroke="#00A2E8" stroke-width="1.5"/>
                             <circle cx="12" cy="7" r="1.8" fill="#00A2E8"/>
@@ -467,17 +564,17 @@
                             <circle cx="12" cy="19" r="1.2" fill="#FF6B6B"/>
                         </svg>
                     </div>
-                    <p class="text-[13px] font-semibold text-[#555] leading-snug">
+                    <p class="text-[13px] font-semibold text-[var(--kb-text-soft)] leading-snug">
                         Point, click, and drag!<br>
-                        <span class="text-[#00A2E8]">card-style</span> task management
+                        <span class="text-[var(--kb-blue)]">card-style</span> task management
                     </p>
                 </div>
             </aside>
         </div>
 
         <!-- Footer -->
-        <footer class="mt-12 pt-6 border-t border-[#E9E9E9] text-center">
-            <p class="text-xs font-medium text-[#999] flex items-center justify-center gap-2">
+        <footer class="mt-12 pt-6 border-t border-[var(--kb-gray-border)] text-center">
+            <p class="text-xs font-medium text-[var(--kb-text-muted)] flex items-center justify-center gap-2">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
                     <path d="M12 8v4l2.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -488,10 +585,10 @@
     </div>
 
     <!-- New Task Modal -->
-    <div id="taskModal" class="fixed inset-0 bg-black/25 backdrop-blur-[2px] hidden items-center justify-center p-4 z-50">
+    <div id="taskModal" class="fixed inset-0 bg-[var(--kb-modal-overlay)] backdrop-blur-[2px] hidden items-center justify-center p-4 z-50">
         <div class="kb-card w-full max-w-[420px] p-7 animate-[floatSoft_0.4s_ease]">
             <h3 class="text-xl font-extrabold mb-5 flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-[16px] bg-[#00A2E8] flex items-center justify-center shadow-md">
+                <div class="w-9 h-9 rounded-[16px] bg-[var(--kb-blue)] flex items-center justify-center shadow-md">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
                         <path d="M12 5v14M5 12h14"/>
                     </svg>
@@ -500,22 +597,22 @@
             </h3>
             <form id="taskForm" class="space-y-4">
                 <div>
-                    <label class="block text-[13px] font-bold text-[#555] mb-2">Task Title</label>
+                    <label class="block text-[13px] font-bold text-[var(--kb-text-soft)] mb-2">Task Title</label>
                     <input type="text" id="taskTitle" required maxlength="60"
-                        class="w-full px-4 py-3.5 rounded-[20px] border-2 border-[#E0E0E0] bg-white text-[15px] font-medium focus:border-[#00A2E8] focus:ring-4 focus:ring-[#00A2E8]/15 outline-none transition"
+                        class="w-full px-4 py-3.5 rounded-[20px] border-2 border-[var(--kb-border)] bg-[var(--kb-white)] text-[15px] font-medium focus:border-[var(--kb-blue)] focus:ring-4 focus:ring-[color-mix(in_srgb,var(--kb-blue)_15%,transparent)] outline-none transition"
                         placeholder="e.g., Plan sprint tasks">
                 </div>
                 <div>
-                    <label class="block text-[13px] font-bold text-[#555] mb-2">Details (optional)</label>
+                    <label class="block text-[13px] font-bold text-[var(--kb-text-soft)] mb-2">Details (optional)</label>
                     <textarea id="taskDesc" rows="3" maxlength="140"
-                        class="w-full px-4 py-3.5 rounded-[20px] border-2 border-[#E0E0E0] bg-white text-[14px] font-medium focus:border-[#00A2E8] focus:ring-4 focus:ring-[#00A2E8]/15 outline-none transition resize-none"
+                        class="w-full px-4 py-3.5 rounded-[20px] border-2 border-[var(--kb-border)] bg-[var(--kb-white)] text-[14px] font-medium focus:border-[var(--kb-blue)] focus:ring-4 focus:ring-[color-mix(in_srgb,var(--kb-blue)_15%,transparent)] outline-none transition resize-none"
                         placeholder="Add a quick note..."></textarea>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="submit" class="kb-capsule kb-button-primary flex-1 py-3.5 font-bold">
                         Add to Board
                     </button>
-                    <button type="button" id="cancelTaskBtn" class="kb-capsule px-6 py-3.5 font-semibold text-[#666]">
+                    <button type="button" id="cancelTaskBtn" class="kb-capsule px-6 py-3.5 font-semibold text-[var(--kb-text-secondary)]">
                         Cancel
                     </button>
                 </div>
@@ -599,7 +696,7 @@
             overlay.innerHTML = `
                 <div class="flex flex-col items-center gap-3">
                     <div class="kb-avatar float-soft" style="width:64px;height:64px;font-size:1.5rem">M</div>
-                    <p class="text-sm font-bold text-[#00A2E8] animate-pulse">Loading from cloud...</p>
+                    <p class="text-sm font-bold text-[var(--kb-blue)] animate-pulse">Loading from cloud...</p>
                 </div>
             `;
             document.body.appendChild(overlay);
@@ -637,7 +734,7 @@
                 notesTimer = setTimeout(async () => {
                     await db.collection('notes').doc('notepad').set({ content: notes });
                     notesPad.style.borderColor = '#7ED957';
-                    setTimeout(() => { notesPad.style.borderColor = '#F0D9B5'; }, 300);
+                    setTimeout(() => { notesPad.style.borderColor = ''; }, 300);
                 }, 400);
                 updateNotesCounter();
             });
@@ -764,12 +861,12 @@
             if (columnTasks.length === 0) {
                 container.innerHTML = `
                     <div class="text-center py-10 px-3">
-                        <div class="w-14 h-14 mx-auto mb-3 rounded-[22px] bg-[#F7F7F7] border-2 border-dashed border-[#DDD] flex items-center justify-center">
+                        <div class="w-14 h-14 mx-auto mb-3 rounded-[22px] bg-[var(--kb-surface-muted)] border-2 border-dashed border-[var(--kb-text-light)] flex items-center justify-center">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-[#CCC]">
                                 <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             </svg>
                         </div>
-                        <p class="text-[13px] font-medium text-[#AAA] leading-snug">
+                        <p class="text-[13px] font-medium text-[var(--kb-text-light)] leading-snug">
                             Drop tasks here<br>or create new
                         </p>
                     </div>
@@ -792,12 +889,12 @@
                 taskEl.innerHTML = `
                     <div class="flex items-start gap-3 ${colors[columnKey]} pl-3 -ml-4">
                         <div class="flex-1 min-w-0">
-                            <h4 class="font-bold text-[15px] leading-snug text-[#2D2D2D] group-hover:text-[#00A2E8] transition-colors">
+                            <h4 class="font-bold text-[15px] leading-snug text-[var(--kb-text)] group-hover:text-[var(--kb-blue)] transition-colors">
                                 ${escapeHtml(task.title)}
                             </h4>
-                            ${task.description ? `<p class="text-[13px] text-[#666] mt-1.5 leading-snug">${escapeHtml(task.description)}</p>` : ''}
+                            ${task.description ? `<p class="text-[13px] text-[var(--kb-text-secondary)] mt-1.5 leading-snug">${escapeHtml(task.description)}</p>` : ''}
                             <div class="flex items-center gap-2 mt-3">
-                                <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#F5F5F5] text-[#777] border border-[#E8E8E8]">
+                                <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[var(--kb-surface-soft)] text-[var(--kb-text-dim)] border border-[var(--kb-border-mid)]">
                                     ${new Date(task.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                                 </span>
                             </div>
@@ -1023,19 +1120,9 @@
             root.style.setProperty('--kb-blue-pale', palette.bluePale);
             periodDot.style.background = palette.dot;
 
-            const hour = getTimeInTimezone(selectedTimezone || Intl.DateTimeFormat().resolvedOptions().timeZone).hour;
-            const nightMode = period === 'night' || hour < 5;
-            if (nightMode || period === 'evening') {
-                root.style.setProperty('--kb-clock-text', '#CCC');
-                root.style.setProperty('--kb-clock-bg', '#2A2A2E');
-                root.style.setProperty('--kb-clock-border', '#444');
-                periodLabel.style.color = '#999';
-            } else {
-                root.style.setProperty('--kb-clock-text', '#2D2D2D');
-                root.style.setProperty('--kb-clock-bg', '#F0F4F8');
-                root.style.setProperty('--kb-clock-border', '#D9D9D9');
-                periodLabel.style.color = '#999';
-            }
+            const isDark = period === 'night' || period === 'evening';
+            document.body.dataset.theme = isDark ? 'night' : 'light';
+            periodLabel.style.color = isDark ? '#999' : '#999';
 
             document.body.className = document.body.className
                 .replace(/time-\w+/g, '')

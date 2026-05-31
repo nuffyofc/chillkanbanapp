@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kanvas – Kanban • Notes • Monitor</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore-compat.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Varela+Round&display=swap" rel="stylesheet">
@@ -599,7 +597,7 @@
                         <span id="notes-count">0 characters</span>
                         <span class="flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full bg-[#7ED957] animate-pulse"></span>
-                            cloud saved
+                            saved locally
                         </span>
                     </div>
                 </div>
@@ -629,7 +627,7 @@
                     <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
                     <path d="M12 8v4l2.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                 </svg>
-                Built with soft playful vibes • Cloud-synced via Firestore ✨
+                Built with soft playful vibes • Saved to your browser ✨
             </p>
         </footer>
     </div>
@@ -671,18 +669,6 @@
     </div>
 
     <script>
-        // Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyBeErbKPyVJr7ITsQ8ctC7JsZpRYZypbBw",
-            authDomain: "kanbanapp-e63ae.firebaseapp.com",
-            projectId: "kanbanapp-e63ae",
-            storageBucket: "kanbanapp-e63ae.firebasestorage.app",
-            messagingSenderId: "237638744116",
-            appId: "1:237638744116:web:dab714410999e46fcef261"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
         // App State
         let tasks = [];
         let notes = '';
@@ -690,6 +676,10 @@
         let notesTimer = null;
         let selectedTimezone = null;
         let clockInterval = null;
+
+        function saveTasks() {
+            localStorage.setItem('kanvas-tasks', JSON.stringify(tasks));
+        }
 
         // DOM Elements
         const todoColumn = document.getElementById('todo-column');
@@ -723,9 +713,9 @@
         };
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', async () => {
+        document.addEventListener('DOMContentLoaded', () => {
             showLoading();
-            await loadData();
+            loadData();
             renderAll();
             setupEventListeners();
             setupDragAndDrop();
@@ -746,7 +736,7 @@
             overlay.innerHTML = `
                 <div class="flex flex-col items-center gap-3">
                     <div class="kb-avatar float-soft" style="width:64px;height:64px;font-size:1.5rem">M</div>
-                    <p class="text-sm font-bold text-[var(--kb-blue)] animate-pulse">Loading from cloud...</p>
+                    <p class="text-sm font-bold text-[var(--kb-blue)] animate-pulse">Loading your tasks...</p>
                 </div>
             `;
             document.body.appendChild(overlay);
@@ -781,25 +771,21 @@
             notesPad.addEventListener('input', () => {
                 notes = notesPad.value;
                 clearTimeout(notesTimer);
-                notesTimer = setTimeout(async () => {
-                    await db.collection('notes').doc('notepad').set({ content: notes });
+                notesTimer = setTimeout(() => {
+                    localStorage.setItem('kanvas-notes', notes);
                     notesPad.style.borderColor = '#7ED957';
                     setTimeout(() => { notesPad.style.borderColor = ''; }, 300);
                 }, 400);
                 updateNotesCounter();
             });
 
-            clearAllBtn.addEventListener('click', async () => {
+            clearAllBtn.addEventListener('click', () => {
                 if (confirm('Clear all tasks and notes? This cannot be undone.')) {
-                    if (tasks.length > 0) {
-                        const batch = db.batch();
-                        tasks.forEach(t => batch.delete(db.collection('tasks').doc(t.id)));
-                        await batch.commit();
-                    }
-                    await db.collection('notes').doc('notepad').set({ content: '' });
                     tasks = [];
                     notes = '';
                     notesPad.value = '';
+                    saveTasks();
+                    localStorage.removeItem('kanvas-notes');
                     renderAll();
                     updateNotesCounter();
                 }
@@ -822,7 +808,7 @@
             taskForm.reset();
         }
 
-        async function addNewTask() {
+        function addNewTask() {
             const title = document.getElementById('taskTitle').value.trim();
             const desc = document.getElementById('taskDesc').value.trim();
 
@@ -836,8 +822,8 @@
                 createdAt: new Date().toISOString()
             };
 
-            await db.collection('tasks').doc(task.id).set(task);
             tasks.unshift(task);
+            saveTasks();
             renderAll();
             closeModal();
 
@@ -845,17 +831,17 @@
             setTimeout(() => { newTaskBtn.style.transform = ''; }, 150);
         }
 
-        async function deleteTask(taskId) {
-            await db.collection('tasks').doc(taskId).delete();
+        function deleteTask(taskId) {
             tasks = tasks.filter(t => t.id !== taskId);
+            saveTasks();
             renderAll();
         }
 
-        async function moveTask(taskId, newColumn) {
+        function moveTask(taskId, newColumn) {
             const task = tasks.find(t => t.id === taskId);
             if (task && task.column !== newColumn) {
                 task.column = newColumn;
-                await db.collection('tasks').doc(taskId).update({ column: newColumn });
+                saveTasks();
                 renderAll();
                 if (newColumn === 'done') launchConfetti();
             }
@@ -1058,27 +1044,22 @@
             document.getElementById('notes-count').textContent = `${count.toLocaleString()} character${count !== 1 ? 's' : ''}`;
         }
 
-        async function loadData() {
-            const snapshot = await db.collection('tasks').get();
-            tasks = [];
-            if (!snapshot.empty) {
-                snapshot.forEach(doc => tasks.push({ ...doc.data() }));
-                tasks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        function loadData() {
+            const saved = localStorage.getItem('kanvas-tasks');
+            if (saved) {
+                tasks = JSON.parse(saved);
             } else {
-                const seed = [
+                tasks = [
                     { id: 'seed1', title: 'Welcome to the board! 👋', description: 'Drag this card to another column to try it out.', column: 'todo', createdAt: new Date().toISOString() },
                     { id: 'seed2', title: 'Plan your project roadmap', description: 'Break down big goals into small steps.', column: 'inprogress', createdAt: new Date(Date.now() - 86400000).toISOString() },
                     { id: 'seed3', title: 'Review quarterly goals', description: 'Bowling strike achieved!', column: 'done', createdAt: new Date(Date.now() - 172800000).toISOString() }
                 ];
-                const batch = db.batch();
-                seed.forEach(t => batch.set(db.collection('tasks').doc(t.id), t));
-                await batch.commit();
-                tasks = seed;
+                saveTasks();
             }
 
-            const notesDoc = await db.collection('notes').doc('notepad').get();
-            if (notesDoc.exists) {
-                notes = notesDoc.data().content || '';
+            const savedNotes = localStorage.getItem('kanvas-notes');
+            if (savedNotes !== null) {
+                notes = savedNotes;
                 notesPad.value = notes;
             }
         }

@@ -120,20 +120,20 @@
             min-height: 100vh;
         }
 
-        body.time-sunrise { background-color: #FFF5EC; }
-        body.time-sunrise { --kb-surface: #FFFBF5; --kb-surface-alt: #FFF5EB; --kb-surface-card: #FFFDF7; --kb-surface-task: #FFFDF7; --kb-surface-column: #FFF8F0; --kb-surface-header: linear-gradient(180deg, #FDE8DC 0%, #FCDCC8 100%); }
-        body.time-morning { background-color: #FFF8F0; }
-        body.time-morning { --kb-surface: #FFFCF5; --kb-surface-alt: #FFF5EB; --kb-surface-card: #FFFEF8; --kb-surface-task: #FFFEF8; --kb-surface-column: #FFFBF5; --kb-surface-header: linear-gradient(180deg, #FDF0D8 0%, #FCE8C8 100%); }
-        body.time-noon    { background-color: #FAFAFA; }
-        body.time-noon    { --kb-surface: #FFFFFF; --kb-surface-alt: #FCFCFC; --kb-surface-card: #FFFFFF; --kb-surface-task: #FFFFFF; --kb-surface-column: #FDFDFD; --kb-surface-header: linear-gradient(180deg, var(--kb-blue-pale) 0%, #D0ECF8 100%); }
-        body.time-afternoon { background-color: #F5F8FC; }
-        body.time-afternoon { --kb-surface: #FAFCFF; --kb-surface-alt: #F0F6FE; --kb-surface-card: #FCFEFF; --kb-surface-task: #FCFEFF; --kb-surface-column: #F5F9FE; --kb-surface-header: linear-gradient(180deg, #DCE8F8 0%, #C8DCF4 100%); }
-        body.time-sunset  { background-color: #FFF0EC; }
-        body.time-sunset  { --kb-surface: #FFF8F2; --kb-surface-alt: #FFEDE5; --kb-surface-card: #FFFBF5; --kb-surface-task: #FFFBF5; --kb-surface-column: #FFF5ED; --kb-surface-header: linear-gradient(180deg, #FDE0CC 0%, #FCD4B8 100%); }
-        body.time-evening { background-color: #6404c5; }
+        body.time-sunrise { background-color: #FF8C42; }
+        body.time-sunrise { --kb-surface: #FFF0E0; --kb-surface-alt: #FFE0C8; --kb-surface-card: #FFF8F0; --kb-surface-task: #FFF8F0; --kb-surface-column: #FFE8D0; --kb-surface-header: linear-gradient(180deg, #FDE8DC 0%, #FCDCC8 100%); }
+        body.time-morning { background-color: #FFD699; }
+        body.time-morning { --kb-surface: #FFF5E8; --kb-surface-alt: #FFEDD0; --kb-surface-card: #FFFCF5; --kb-surface-task: #FFFCF5; --kb-surface-column: #FFF0D8; --kb-surface-header: linear-gradient(180deg, #FDF0D8 0%, #FCE8C8 100%); }
+        body.time-noon    { background-color: #87CEEB; }
+        body.time-noon    { --kb-surface: #FFFFFF; --kb-surface-alt: #F0F8FC; --kb-surface-card: #FFFFFF; --kb-surface-task: #FFFFFF; --kb-surface-column: #F8FCFF; --kb-surface-header: linear-gradient(180deg, var(--kb-blue-pale) 0%, #D0ECF8 100%); }
+        body.time-afternoon { background-color: #A8C8E8; }
+        body.time-afternoon { --kb-surface: #F8FCFF; --kb-surface-alt: #E8F0F8; --kb-surface-card: #FCFEFF; --kb-surface-task: #FCFEFF; --kb-surface-column: #F0F4FA; --kb-surface-header: linear-gradient(180deg, #DCE8F8 0%, #C8DCF4 100%); }
+        body.time-sunset  { background-color: #E8652A; }
+        body.time-sunset  { --kb-surface: #FFF0E8; --kb-surface-alt: #FFE0D0; --kb-surface-card: #FFF8F2; --kb-surface-task: #FFF8F2; --kb-surface-column: #FFE8D8; --kb-surface-header: linear-gradient(180deg, #FDE0CC 0%, #FCD4B8 100%); }
+        body.time-evening { background-color: #4A2070; }
         body.time-evening { --kb-surface: #1C0A30; --kb-surface-alt: #160828; --kb-surface-card: #1C0A30; --kb-surface-task: #1C0A30; --kb-surface-column: #180A28; --kb-surface-header: linear-gradient(180deg, #2A1040 0%, #220C38 100%); }
-        body.time-night   { background-color: #053880; }
-        body.time-night   { --kb-surface: #081830; --kb-surface-alt: #061428; --kb-surface-card: #081830; --kb-surface-task: #081830; --kb-surface-column: #061428; --kb-surface-header: linear-gradient(180deg, #0C2040 0%, #081838 100%); }
+        body.time-night   { background-color: #1A1A24; }
+        body.time-night   { --kb-surface: #181820; --kb-surface-alt: #14141C; --kb-surface-card: #181820; --kb-surface-task: #181820; --kb-surface-column: #14141C; --kb-surface-header: linear-gradient(180deg, #1C1C28 0%, #181820 100%); }
 
         body.time-sunrise .kb-column,
         body.time-morning .kb-column,
@@ -241,6 +241,94 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
+
+        .kb-weather {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--kb-clock-text);
+            padding: 6px 14px;
+            border-radius: 9999px;
+            background: var(--kb-clock-bg);
+            border: 2px solid var(--kb-clock-border);
+            box-shadow: 0 4px 0 rgba(0,0,0,0.04), 0 6px 12px rgba(0,0,0,0.04);
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .kb-weather-temp { font-weight: 800; font-size: 13px; }
+        .kb-weather-desc { opacity: 0.6; font-size: 10px; }
+        .kb-weather-sep { width: 1px; height: 14px; background: var(--kb-clock-border); opacity: 0.5; }
+
+        .kb-moon {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--kb-clock-text);
+        }
+
+        .kb-moon svg { flex-shrink: 0; width: 14px; height: 14px; }
+        .kb-moon-pct { font-size: 9px; opacity: 0.5; }
+
+        body.time-evening .kb-weather,
+        body.time-night .kb-weather { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.12); box-shadow: none; }
+
+        .kb-stars {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        body.time-night .kb-stars,
+        body.time-evening .kb-stars { opacity: 1; }
+
+        .kb-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--d) ease-in-out infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0%   { opacity: 0.15; transform: scale(0.8); }
+            100% { opacity: 0.9;  transform: scale(1.2); }
+        }
+
+        .kb-grass {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .kb-grass-svg {
+            width: 100%;
+            height: 100%;
+            fill: rgba(0,0,0,0.12);
+            animation: grassSway var(--wind-speed, 4s) ease-in-out infinite alternate;
+        }
+
+        @keyframes grassSway {
+            0%   { transform: skewX(-2deg) translateX(-5px); }
+            100% { transform: skewX(2deg) translateX(5px); }
+        }
+
+        body.time-night .kb-grass-svg { fill: rgba(255,255,255,0.06); }
+        body.time-evening .kb-grass-svg { fill: rgba(255,255,255,0.05); }
 
         .kb-capsule {
             border-radius: 9999px;
@@ -475,6 +563,18 @@
                     <span class="kb-period-label" id="periodLabel">noon</span>
                     <select class="kb-tz-select" id="tzSelect"></select>
                 </div>
+                <div class="kb-weather" id="weatherDisplay">
+                    <span class="kb-weather-temp" id="weatherTemp">--°C</span>
+                    <span class="kb-weather-desc" id="weatherDesc">loading</span>
+                    <span class="kb-weather-sep"></span>
+                    <span class="kb-moon" id="moonDisplay">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" id="moonIcon">
+                            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        </svg>
+                        <span id="moonPhase">--</span>
+                        <span class="kb-moon-pct" id="moonPct"></span>
+                    </span>
+                </div>
                 <button id="newTaskBtn" class="kb-capsule kb-button-primary px-6 py-3 text-sm font-bold flex items-center gap-2">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path d="M12 5v14M5 12h14"/>
@@ -681,6 +781,25 @@
         </div>
     </div>
 
+    <div class="kb-grass" id="grassContainer">
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" class="kb-grass-svg">
+            <path class="kb-grass-blade" d="M0 120 Q40 60 60 10 Q65 0 70 10 Q90 50 100 80 Q110 100 120 120Z"/>
+            <path class="kb-grass-blade" d="M120 120 Q150 50 170 15 Q175 5 180 15 Q200 60 220 90 Q230 105 240 120Z"/>
+            <path class="kb-grass-blade" d="M240 120 Q270 40 290 5 Q295 -5 300 5 Q320 50 340 80 Q350 100 360 120Z"/>
+            <path class="kb-grass-blade" d="M360 120 Q390 55 410 20 Q415 10 420 20 Q440 65 460 95 Q470 110 480 120Z"/>
+            <path class="kb-grass-blade" d="M480 120 Q510 45 530 8 Q535 -2 540 8 Q560 55 580 85 Q590 105 600 120Z"/>
+            <path class="kb-grass-blade" d="M600 120 Q630 50 650 12 Q655 2 660 12 Q680 60 700 90 Q710 108 720 120Z"/>
+            <path class="kb-grass-blade" d="M720 120 Q750 40 770 5 Q775 -5 780 5 Q800 50 820 80 Q830 100 840 120Z"/>
+            <path class="kb-grass-blade" d="M840 120 Q870 55 890 18 Q895 8 900 18 Q920 65 940 95 Q950 110 960 120Z"/>
+            <path class="kb-grass-blade" d="M960 120 Q990 45 1010 10 Q1015 0 1020 10 Q1040 55 1060 85 Q1070 105 1080 120Z"/>
+            <path class="kb-grass-blade" d="M1080 120 Q1110 50 1130 15 Q1135 5 1140 15 Q1160 60 1180 90 Q1190 108 1200 120Z"/>
+            <path class="kb-grass-blade" d="M1200 120 Q1230 40 1250 8 Q1255 -2 1260 8 Q1280 55 1300 85 Q1310 100 1320 120Z"/>
+            <path class="kb-grass-blade" d="M1320 120 Q1350 55 1370 15 Q1375 5 1380 15 Q1400 65 1420 95 Q1430 110 1440 120Z"/>
+        </svg>
+    </div>
+
+    <div class="kb-stars" id="starsContainer"></div>
+
     <script>
         // App State
         let tasks = [];
@@ -709,16 +828,22 @@
         const periodDot = document.getElementById('periodDot');
         const periodLabel = document.getElementById('periodLabel');
         const tzSelect = document.getElementById('tzSelect');
+        const weatherTemp = document.getElementById('weatherTemp');
+        const weatherDesc = document.getElementById('weatherDesc');
+        const moonIcon = document.getElementById('moonIcon');
+        const moonPhase = document.getElementById('moonPhase');
+        const moonPct = document.getElementById('moonPct');
+        let cachedWeather = null;
 
         // Time-of-day color palettes
         const timePalettes = {
-            sunrise:  { blue: '#E07A4F', blueLight: '#E8A080', bluePale: '#FDE8DC', dot: '#FF8C5A', bg: '#FFF5EC' },
-            morning:  { blue: '#D4A040', blueLight: '#E0B870', bluePale: '#FDF3E0', dot: '#FFB347', bg: '#FFF8F0' },
-            noon:     { blue: '#00A2E8', blueLight: '#88C0D0', bluePale: '#E6F7FF', dot: '#00A2E8', bg: '#FAFAFA' },
-            afternoon:{ blue: '#4A8DB8', blueLight: '#7DACCC', bluePale: '#E0EFF8', dot: '#4A8DB8', bg: '#F5F8FC' },
-            sunset:   { blue: '#D45A30', blueLight: '#E08060', bluePale: '#FCE0D4', dot: '#FF6B35', bg: '#FFF0EC' },
-            evening:  { blue: '#7C5CBF', blueLight: '#A88FD4', bluePale: '#EDE4F7', dot: '#7C5CBF', bg: '#F8F4FC' },
-            night:    { blue: '#2B4A6E', blueLight: '#5A7A9E', bluePale: '#D0DCE8', dot: '#2B4A6E', bg: '#E8EDF4' }
+            sunrise:  { blue: '#E07A4F', blueLight: '#E8A080', bluePale: '#FDE8DC', dot: '#FF8C5A', bg: '#FF8C42' },
+            morning:  { blue: '#D4A040', blueLight: '#E0B870', bluePale: '#FDF3E0', dot: '#FFB347', bg: '#FFD699' },
+            noon:     { blue: '#00A2E8', blueLight: '#88C0D0', bluePale: '#E6F7FF', dot: '#00A2E8', bg: '#87CEEB' },
+            afternoon:{ blue: '#4A8DB8', blueLight: '#7DACCC', bluePale: '#E0EFF8', dot: '#4A8DB8', bg: '#A8C8E8' },
+            sunset:   { blue: '#D45A30', blueLight: '#E08060', bluePale: '#FCE0D4', dot: '#FF6B35', bg: '#E8652A' },
+            evening:  { blue: '#7C5CBF', blueLight: '#A88FD4', bluePale: '#EDE4F7', dot: '#7C5CBF', bg: '#4A2070' },
+            night:    { blue: '#2B4A6E', blueLight: '#5A7A9E', bluePale: '#D0DCE8', dot: '#E8E8F0', bg: '#1A1A24' }
         };
 
         const periodNames = {
@@ -736,6 +861,10 @@
             updateNotesCounter();
             populateTimezoneOptions();
             initClock();
+            generateStars();
+            getMoonPhase();
+            fetchWeather();
+            setInterval(fetchWeather, 600000);
             hideLoading();
         });
 
@@ -762,6 +891,104 @@
                 overlay.style.opacity = '0';
                 overlay.style.transition = 'opacity 0.3s';
                 setTimeout(() => overlay.remove(), 300);
+            }
+        }
+
+        function generateStars() {
+            const container = document.getElementById('starsContainer');
+            container.innerHTML = '';
+            for (let i = 0; i < 120; i++) {
+                const star = document.createElement('div');
+                star.className = 'kb-star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.setProperty('--d', (2 + Math.random() * 4) + 's');
+                star.style.width = star.style.height = (1 + Math.random() * 2) + 'px';
+                container.appendChild(star);
+            }
+        }
+
+        function getMoonPhase() {
+            const now = new Date();
+            const knownNewMoon = new Date(2000, 0, 6, 18, 14);
+            const synodic = 29.53058867;
+            const days = (now - knownNewMoon) / 86400000;
+            const phase = ((days % synodic) / synodic + 1) % 1;
+
+            const pct = Math.round(phase * 100);
+            let name, illumination;
+            if (phase < 0.03 || phase > 0.97) { name = 'New Moon'; illumination = 0; }
+            else if (phase < 0.22) { name = 'Waxing Crescent'; illumination = phase; }
+            else if (phase < 0.28) { name = 'First Quarter'; illumination = 0.5; }
+            else if (phase < 0.47) { name = 'Waxing Gibbous'; illumination = phase; }
+            else if (phase < 0.53) { name = 'Full Moon'; illumination = 1; }
+            else if (phase < 0.72) { name = 'Waning Gibbous'; illumination = 1 - phase; }
+            else if (phase < 0.78) { name = 'Last Quarter'; illumination = 0.5; }
+            else { name = 'Waning Crescent'; illumination = 1 - phase; }
+
+            drawMoon(illumination, phase);
+            moonPhase.textContent = name;
+            moonPct.textContent = pct + '%';
+        }
+
+        function drawMoon(illum, phase) {
+            const r = 9;
+            const cx = 12, cy = 12;
+            const lit = Math.min(1, Math.max(0, illum));
+
+            if (lit < 0.01) {
+                moonIcon.innerHTML = `<circle cx="${cx}" cy="${cy}" r="${r}" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.3"/>`;
+                return;
+            }
+            if (lit > 0.99) {
+                moonIcon.innerHTML = `<circle cx="${cx}" cy="${cy}" r="${r}" stroke="currentColor" stroke-width="1.5" fill="currentColor" opacity="0.9"/>`;
+                return;
+            }
+
+            const isWaxing = phase < 0.5;
+            const sweep = isWaxing ? 1 : 0;
+            const arcX = r * (1 - lit * 1.8);
+
+            moonIcon.innerHTML = `
+                <circle cx="${cx}" cy="${cy}" r="${r}" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.3"/>
+                <path d="M ${cx} ${cy - r} A ${r} ${r} 0 0 ${sweep} ${cx} ${cy + r} A ${Math.abs(arcX)} ${r} 0 0 ${sweep} ${cx} ${cy - r} Z" fill="currentColor" opacity="0.9"/>
+            `;
+        }
+
+        async function fetchWeather() {
+            try {
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=46.05&longitude=14.50&current_weather=true&timezone=auto');
+                const data = await res.json();
+                const cw = data.current_weather;
+                const temp = Math.round(cw.temperature);
+                const wmo = cw.weathercode;
+                const windKph = cw.windspeed;
+
+                const descriptions = {
+                    0: 'clear', 1: 'mainly clear', 2: 'partly cloudy', 3: 'overcast',
+                    45: 'foggy', 48: 'depositing rime fog',
+                    51: 'light drizzle', 53: 'moderate drizzle', 55: 'dense drizzle',
+                    56: 'light freezing drizzle', 57: 'dense freezing drizzle',
+                    61: 'slight rain', 63: 'moderate rain', 65: 'heavy rain',
+                    66: 'light freezing rain', 67: 'heavy freezing rain',
+                    71: 'slight snow', 73: 'moderate snow', 75: 'heavy snow',
+                    77: 'snow grains',
+                    80: 'slight rain showers', 81: 'moderate rain showers', 82: 'violent rain showers',
+                    85: 'slight snow showers', 86: 'heavy snow showers',
+                    95: 'thunderstorm', 96: 'thunderstorm with slight hail', 99: 'thunderstorm with heavy hail'
+                };
+                const desc = descriptions[wmo] || 'unknown';
+
+                weatherTemp.textContent = temp + '°C';
+                weatherDesc.textContent = desc;
+
+                const duration = Math.max(1.5, 6 - windKph * 0.15);
+                const grass = document.getElementById('grassContainer');
+                if (grass) grass.style.setProperty('--wind-speed', duration + 's');
+
+                cachedWeather = { temp, desc, time: Date.now() };
+            } catch {
+                weatherDesc.textContent = 'unavailable';
             }
         }
 
@@ -1238,6 +1465,7 @@
             liveClock.textContent = timeStr;
             periodLabel.textContent = period;
             applyTimePalette(period);
+            getMoonPhase();
         }
 
         function initClock() {
@@ -1261,6 +1489,16 @@
             div.textContent = str;
             return div.innerHTML;
         }
+
+        document.addEventListener('mousemove', (e) => {
+            const stars = document.querySelectorAll('.kb-star');
+            const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+            const dx = (e.clientX - cx) / cx, dy = (e.clientY - cy) / cy;
+            stars.forEach((star, i) => {
+                const speed = 4 + (i % 5) * 2;
+                star.style.transform = `translate(${dx * speed}px, ${dy * speed}px)`;
+            });
+        });
 
         document.addEventListener('mouseenter', (e) => {
             if (e.target.classList.contains('kb-task') || e.target.classList.contains('kb-capsule')) {

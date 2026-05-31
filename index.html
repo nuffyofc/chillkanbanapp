@@ -290,11 +290,39 @@
             background: var(--kb-white);
             border-radius: 22px;
             border: 2px solid var(--kb-gray-border);
-            box-shadow: 0 4px 0 var(--kb-shadow), 0 8px 16px rgba(0,0,0,0.05);
-            cursor: grab;
-            transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
-            user-select: none;
+            box-shadow: 0 4px 0 var(--kb-gray-border), 0 8px 16px rgba(0,0,0,0.03);
+            transition: all 0.15s ease;
+            cursor: pointer;
         }
+
+        .kb-priority {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--kb-surface-soft);
+            border: 1.5px solid var(--kb-border-mid);
+            font-size: 10px;
+            font-weight: 900;
+            color: var(--kb-text-dim);
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .kb-priority.high { background: #FFEDEC; border-color: #FF6B6B; color: #D14545; }
+        .kb-priority.medium { background: #FFF4E6; border-color: #FFD93D; color: #B8871A; }
+        .kb-priority.low { background: #EDF9F0; border-color: #7ED957; color: #3D8A3D; }
+
+        body.time-evening .kb-priority { background: #2A1040; border-color: #4A2870; color: #B090D0; }
+        body.time-evening .kb-priority.high { background: #3A1020; border-color: #883040; color: #E08090; }
+        body.time-evening .kb-priority.medium { background: #3A2A10; border-color: #886020; color: #D0B060; }
+        body.time-evening .kb-priority.low { background: #102A18; border-color: #286030; color: #70B080; }
+        body.time-night .kb-priority { background: #082040; border-color: #184880; color: #80A8D0; }
+        body.time-night .kb-priority.high { background: #2A0818; border-color: #682840; color: #D08090; }
+        body.time-night .kb-priority.medium { background: #2A2010; border-color: #685020; color: #C8A860; }
+        body.time-night .kb-priority.low { background: #081A10; border-color: #184828; color: #68A880; }
 
         .kb-task:hover {
             transform: translateY(-3px) rotate(0.5deg);
@@ -641,7 +669,7 @@
                         <path d="M12 5v14M5 12h14"/>
                     </svg>
                 </div>
-                Create New Task
+                <span id="modalTitle">Create New Task</span>
             </h3>
             <form id="taskForm" class="space-y-4">
                 <div>
@@ -657,7 +685,7 @@
                         placeholder="Add a quick note..."></textarea>
                 </div>
                 <div class="flex gap-3 pt-2">
-                    <button type="submit" class="kb-capsule kb-button-primary flex-1 py-3.5 font-bold">
+                    <button type="submit" id="modalSubmitBtn" class="kb-capsule kb-button-primary flex-1 py-3.5 font-bold">
                         Add to Board
                     </button>
                     <button type="button" id="cancelTaskBtn" class="kb-capsule px-6 py-3.5 font-semibold text-[var(--kb-text-secondary)]">
@@ -676,6 +704,7 @@
         let notesTimer = null;
         let selectedTimezone = null;
         let clockInterval = null;
+        let editingTaskId = null;
 
         function saveTasks() {
             localStorage.setItem('kanvas-tasks', JSON.stringify(tasks));
@@ -753,6 +782,11 @@
 
         function setupEventListeners() {
             newTaskBtn.addEventListener('click', () => {
+                editingTaskId = null;
+                document.getElementById('modalTitle').textContent = 'Create New Task';
+                document.getElementById('modalSubmitBtn').textContent = 'Add to Board';
+                document.getElementById('taskTitle').value = '';
+                document.getElementById('taskDesc').value = '';
                 taskModal.classList.remove('hidden');
                 taskModal.classList.add('flex');
                 document.getElementById('taskTitle').focus();
@@ -802,17 +836,42 @@
             });
         }
 
+        function openEditModal(task) {
+            editingTaskId = task.id;
+            document.getElementById('modalTitle').textContent = 'Edit Task';
+            document.getElementById('modalSubmitBtn').textContent = 'Update Task';
+            document.getElementById('taskTitle').value = task.title;
+            document.getElementById('taskDesc').value = task.description || '';
+            taskModal.classList.remove('hidden');
+            taskModal.classList.add('flex');
+            document.getElementById('taskTitle').focus();
+        }
+
         function closeModal() {
             taskModal.classList.add('hidden');
             taskModal.classList.remove('flex');
             taskForm.reset();
+            editingTaskId = null;
+            document.getElementById('modalTitle').textContent = 'Create New Task';
+            document.getElementById('modalSubmitBtn').textContent = 'Add to Board';
         }
 
         function addNewTask() {
             const title = document.getElementById('taskTitle').value.trim();
             const desc = document.getElementById('taskDesc').value.trim();
-
             if (!title) return;
+
+            if (editingTaskId) {
+                const task = tasks.find(t => t.id === editingTaskId);
+                if (task) {
+                    task.title = title;
+                    task.description = desc;
+                    saveTasks();
+                    renderAll();
+                    closeModal();
+                }
+                return;
+            }
 
             const task = {
                 id: 't' + Date.now() + Math.random().toString(36).substr(2, 5),
@@ -835,16 +894,6 @@
             tasks = tasks.filter(t => t.id !== taskId);
             saveTasks();
             renderAll();
-        }
-
-        function moveTask(taskId, newColumn) {
-            const task = tasks.find(t => t.id === taskId);
-            if (task && task.column !== newColumn) {
-                task.column = newColumn;
-                saveTasks();
-                renderAll();
-                if (newColumn === 'done') launchConfetti();
-            }
         }
 
         function launchConfetti() {
@@ -898,7 +947,7 @@
                 container.innerHTML = `
                     <div class="text-center py-10 px-3">
                         <div class="w-14 h-14 mx-auto mb-3 rounded-[22px] bg-[var(--kb-surface-muted)] border-2 border-dashed border-[var(--kb-text-light)] flex items-center justify-center">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-[#CCC]">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-[var(--kb-text-light)]">
                                 <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             </svg>
                         </div>
@@ -910,11 +959,16 @@
                 return;
             }
 
-            columnTasks.forEach(task => {
+            columnTasks.forEach((task, index) => {
                 const taskEl = document.createElement('div');
                 taskEl.className = 'kb-task p-4 group';
                 taskEl.draggable = true;
                 taskEl.dataset.id = task.id;
+
+                const priority = index + 1;
+                let priorityClass = 'low';
+                if (priority <= 2) priorityClass = 'high';
+                else if (priority <= 4) priorityClass = 'medium';
 
                 const colors = {
                     todo: 'border-l-[5px] border-l-[#FF6B6B]',
@@ -923,7 +977,8 @@
                 };
 
                 taskEl.innerHTML = `
-                    <div class="flex items-start gap-3 ${colors[columnKey]} pl-3 -ml-4">
+                    <div class="flex items-start gap-2.5 ${colors[columnKey]} pl-3 -ml-4">
+                        <div class="kb-priority ${priorityClass}">${priority}</div>
                         <div class="flex-1 min-w-0">
                             <h4 class="font-bold text-[15px] leading-snug text-[var(--kb-text)] group-hover:text-[var(--kb-blue)] transition-colors">
                                 ${escapeHtml(task.title)}
@@ -935,7 +990,7 @@
                                 </span>
                             </div>
                         </div>
-                        <button class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-[#FFEDEC] rounded-full" title="Delete task" onclick="window.deleteTaskFromUI('${task.id}')">
+                        <button class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-[#FFEDEC] rounded-full self-start" title="Delete task" onclick="event.stopPropagation();window.deleteTaskFromUI('${task.id}')">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2.2">
                                 <path d="M18 6L6 18M6 6l12 12"/>
                             </svg>
@@ -945,6 +1000,7 @@
 
                 taskEl.addEventListener('dragstart', handleDragStart);
                 taskEl.addEventListener('dragend', handleDragEnd);
+                taskEl.addEventListener('click', () => openEditModal(task));
 
                 container.appendChild(taskEl);
             });
@@ -1006,10 +1062,40 @@
 
             const taskId = e.dataTransfer.getData('text/plain');
             const newColumn = columnEl.dataset.column;
+            const container = columnEl.querySelector('.tasks-container');
 
-            if (taskId && newColumn) {
-                moveTask(taskId, newColumn);
+            const task = tasks.find(t => t.id === taskId);
+            if (!task || !newColumn) return;
+
+            const dropIndex = getDropIndex(container, e.clientY);
+            const oldIndex = tasks.findIndex(t => t.id === taskId);
+            tasks.splice(oldIndex, 1);
+
+            const columnTasks = tasks.filter(t => t.column === newColumn);
+            let insertPos = tasks.length;
+            let count = 0;
+            for (let i = 0; i < tasks.length; i++) {
+                if (tasks[i].column === newColumn) {
+                    if (count === dropIndex) { insertPos = i; break; }
+                    count++;
+                }
             }
+
+            task.column = newColumn;
+            tasks.splice(insertPos, 0, task);
+            saveTasks();
+            renderAll();
+            if (newColumn === 'done') launchConfetti();
+        }
+
+        function getDropIndex(container, clientY) {
+            if (!container) return 0;
+            const taskEls = container.querySelectorAll('.kb-task');
+            for (let i = 0; i < taskEls.length; i++) {
+                const rect = taskEls[i].getBoundingClientRect();
+                if (clientY < rect.top + rect.height / 2) return i;
+            }
+            return taskEls.length;
         }
 
         function updateCounters() {

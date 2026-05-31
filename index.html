@@ -123,12 +123,60 @@
         }
 
         body.time-sunrise { background-color: #FFF5EC; }
+        body.time-sunrise { --kb-surface: #FFFBF5; --kb-surface-alt: #FFF5EB; --kb-surface-card: #FFFDF7; --kb-surface-task: #FFFDF7; --kb-surface-column: #FFF8F0; --kb-surface-header: linear-gradient(180deg, #FDE8DC 0%, #FCDCC8 100%); }
         body.time-morning { background-color: #FFF8F0; }
+        body.time-morning { --kb-surface: #FFFCF5; --kb-surface-alt: #FFF5EB; --kb-surface-card: #FFFEF8; --kb-surface-task: #FFFEF8; --kb-surface-column: #FFFBF5; --kb-surface-header: linear-gradient(180deg, #FDF0D8 0%, #FCE8C8 100%); }
         body.time-noon    { background-color: #FAFAFA; }
+        body.time-noon    { --kb-surface: #FFFFFF; --kb-surface-alt: #FCFCFC; --kb-surface-card: #FFFFFF; --kb-surface-task: #FFFFFF; --kb-surface-column: #FDFDFD; --kb-surface-header: linear-gradient(180deg, var(--kb-blue-pale) 0%, #D0ECF8 100%); }
         body.time-afternoon { background-color: #F5F8FC; }
+        body.time-afternoon { --kb-surface: #FAFCFF; --kb-surface-alt: #F0F6FE; --kb-surface-card: #FCFEFF; --kb-surface-task: #FCFEFF; --kb-surface-column: #F5F9FE; --kb-surface-header: linear-gradient(180deg, #DCE8F8 0%, #C8DCF4 100%); }
         body.time-sunset  { background-color: #FFF0EC; }
+        body.time-sunset  { --kb-surface: #FFF8F2; --kb-surface-alt: #FFEDE5; --kb-surface-card: #FFFBF5; --kb-surface-task: #FFFBF5; --kb-surface-column: #FFF5ED; --kb-surface-header: linear-gradient(180deg, #FDE0CC 0%, #FCD4B8 100%); }
         body.time-evening { background-color: #6404c5; }
+        body.time-evening { --kb-surface: #1C0A30; --kb-surface-alt: #160828; --kb-surface-card: #1C0A30; --kb-surface-task: #1C0A30; --kb-surface-column: #180A28; --kb-surface-header: linear-gradient(180deg, #2A1040 0%, #220C38 100%); }
         body.time-night   { background-color: #053880; }
+        body.time-night   { --kb-surface: #081830; --kb-surface-alt: #061428; --kb-surface-card: #081830; --kb-surface-task: #081830; --kb-surface-column: #061428; --kb-surface-header: linear-gradient(180deg, #0C2040 0%, #081838 100%); }
+
+        body.time-sunrise .kb-column,
+        body.time-morning .kb-column,
+        body.time-noon .kb-column,
+        body.time-afternoon .kb-column,
+        body.time-sunset .kb-column { background: linear-gradient(180deg, var(--kb-surface-column) 0%, var(--kb-surface-alt) 100%); }
+
+        body.time-evening .kb-column,
+        body.time-night .kb-column { background: linear-gradient(180deg, var(--kb-surface-column) 0%, var(--kb-surface-alt) 100%); border-color: #3A3A4E; }
+
+        body.time-sunrise .kb-card, body.time-morning .kb-card, body.time-noon .kb-card, body.time-afternoon .kb-card, body.time-sunset .kb-card { background: var(--kb-surface-card); }
+        body.time-evening .kb-card, body.time-night .kb-card { background: var(--kb-surface-card); border-color: #3A3A4E; }
+
+        body.time-sunrise .kb-task, body.time-morning .kb-task, body.time-noon .kb-task, body.time-afternoon .kb-task, body.time-sunset .kb-task { background: var(--kb-surface-task); }
+        body.time-evening .kb-task, body.time-night .kb-task { background: var(--kb-surface-task); }
+
+        body.time-sunrise .kb-column-header[style*="FFF4E6"] { background: linear-gradient(180deg, #FDE8DC 0%, #FCDCC8 100%) !important; border-bottom-color: #E8C8B0 !important; }
+        body.time-morning .kb-column-header[style*="FFF4E6"] { background: linear-gradient(180deg, #FDF0D8 0%, #FCE8C8 100%) !important; border-bottom-color: #E8D0B0 !important; }
+        body.time-noon .kb-column-header[style*="FFF4E6"] { background: var(--kb-surface-header) !important; border-bottom-color: #C8D8D8 !important; }
+        body.time-afternoon .kb-column-header[style*="FFF4E6"] { background: linear-gradient(180deg, #E8E8F4 0%, #D8DCF0 100%) !important; border-bottom-color: #C0C8DC !important; }
+        body.time-sunset .kb-column-header[style*="FFF4E6"] { background: linear-gradient(180deg, #FDE0CC 0%, #FCD4B8 100%) !important; border-bottom-color: #E0C0A8 !important; }
+        body.time-evening .kb-column-header[style*="FFF4E6"] { background: linear-gradient(180deg, #2A1040 0%, #220C38 100%) !important; border-bottom-color: #3A2050 !important; }
+        body.time-night .kb-column-header[style*="FFF4E6"] { background: linear-gradient(180deg, #0C2040 0%, #081838 100%) !important; border-bottom-color: #1A3050 !important; }
+
+        body.time-sunrise .kb-column-header[style*="E8F9EF"] { background: linear-gradient(180deg, #E8F5E8 0%, #D8EDD8 100%) !important; border-bottom-color: #B8D8B8 !important; }
+        body.time-morning .kb-column-header[style*="E8F9EF"] { background: linear-gradient(180deg, #F0F8E8 0%, #E0F0D8 100%) !important; border-bottom-color: #C0D8B0 !important; }
+        body.time-noon .kb-column-header[style*="E8F9EF"] { background: linear-gradient(180deg, #E8F9EF 0%, #D4F1DE 100%) !important; border-bottom-color: #7ED957 !important; }
+        body.time-afternoon .kb-column-header[style*="E8F9EF"] { background: linear-gradient(180deg, #E0F0E8 0%, #CCE4D8 100%) !important; border-bottom-color: #88C8A0 !important; }
+        body.time-sunset .kb-column-header[style*="E8F9EF"] { background: linear-gradient(180deg, #F0EDE0 0%, #E8E0CC 100%) !important; border-bottom-color: #D0C8A8 !important; }
+        body.time-evening .kb-column-header[style*="E8F9EF"] { background: linear-gradient(180deg, #1A2E1A 0%, #142214 100%) !important; border-bottom-color: #2A4A2A !important; }
+        body.time-night .kb-column-header[style*="E8F9EF"] { background: linear-gradient(180deg, #0A2818 0%, #082014 100%) !important; border-bottom-color: #1A3828 !important; }
+
+        body.time-sunrise .kb-note-area { background: #FFFBF5; background-image: linear-gradient(to bottom, transparent 31px, #FDE0C8 32px), linear-gradient(to right, transparent 31px, #FCD8C0 32px); border-color: #E8C8B0; }
+        body.time-morning .kb-note-area { background: #FFFCF5; background-image: linear-gradient(to bottom, transparent 31px, #F8E8C8 32px), linear-gradient(to right, transparent 31px, #F0D8B8 32px); border-color: #E8D0B0; }
+        body.time-noon .kb-note-area { background: #FFFEF7; background-image: linear-gradient(to bottom, transparent 31px, #FFE4B8 32px), linear-gradient(to right, transparent 31px, #FFD8A8 32px); border-color: #F0D9B5; }
+        body.time-afternoon .kb-note-area { background: #F8FCF8; background-image: linear-gradient(to bottom, transparent 31px, #D8E8D8 32px), linear-gradient(to right, transparent 31px, #C8DCC8 32px); border-color: #C0D0C0; }
+        body.time-sunset .kb-note-area { background: #FFF8F2; background-image: linear-gradient(to bottom, transparent 31px, #F8D8C8 32px), linear-gradient(to right, transparent 31px, #F0C8B8 32px); border-color: #E0C0A8; }
+        body.time-evening .kb-note-area { background: #1C0A30; background-image: linear-gradient(to bottom, transparent 31px, #2A1850 32px), linear-gradient(to right, transparent 31px, #281048 32px); border-color: #3A2860; color: #D0C0E0; }
+        body.time-evening .kb-note-area::placeholder { color: #8A7AA0; }
+        body.time-night .kb-note-area { background: #081830; background-image: linear-gradient(to bottom, transparent 31px, #0C2850 32px), linear-gradient(to right, transparent 31px, #082048 32px); border-color: #1A3060; color: #B0C8E0; }
+        body.time-night .kb-note-area::placeholder { color: #6880A0; }
 
         [data-theme="night"] body {
             animation: hueShift 240s linear infinite;
